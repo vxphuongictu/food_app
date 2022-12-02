@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:food_app_v2/core/SharePreferences.dart';
 import 'package:food_app_v2/screens/login/AuthBanner.dart';
 import 'package:food_app_v2/widgets/MyButton.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
@@ -11,6 +12,7 @@ import 'package:food_app_v2/widgets/MyInput.dart';
 import 'package:food_app_v2/screens/login/BottomText.dart';
 import 'package:food_app_v2/controllers/login.dart';
 import 'package:food_app_v2/screens/home/HomeScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget
 {

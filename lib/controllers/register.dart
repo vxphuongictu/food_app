@@ -31,7 +31,7 @@ Future<bool> registerController({required String name, required String email, re
 
   if (response.statusCode == 201) {
     final userInfo      = jsonDecode(response.body);
-    final storageData   = MyUser();
+    final storageData   = SharedMyUser();
     storageData.set(userInfo['user']['id'], userInfo['user']['name'], userInfo['user']['email'], userInfo['token']);
     registerStatus      = true;
   } else if (response.statusCode == 401) {

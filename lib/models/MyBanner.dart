@@ -7,15 +7,15 @@
  * Models: models/BannerImage.dart
  */
 
-class Banner
+class MyBanner
 {
   late int ? id;
   late int ? user_id;
-  late String ? url_img;
+  late dynamic ? url_img;
   late String ? title;
-  late bool ? status;
+  late int ? status;
 
-  Banner({
+  MyBanner({
     required this.id,
     required this.user_id,
     required this.url_img,
@@ -23,9 +23,9 @@ class Banner
     required this.status
   });
 
-  factory Banner.formJson(Map<String, dynamic> json)
+  factory MyBanner.formJson(Map<String, dynamic> json)
   {
-    return Banner(
+    return MyBanner(
       id      : json['id'],
       user_id : json['user_id'],
       url_img : json['url_img'],

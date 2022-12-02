@@ -17,7 +17,7 @@ import 'package:food_app_v2/core/SharePreferences.dart';
 Future<ProductSearch> fetchDetails({required String str}) async
 {
   final uri         = api_search + str;
-  final myUser      = MyUser();
+  final myUser      = SharedMyUser();
   final accessToken = myUser.getToken();
   final response     = await http.get(
       Uri.parse(uri),

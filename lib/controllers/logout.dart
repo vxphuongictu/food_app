@@ -16,7 +16,7 @@ import 'package:food_app_v2/core/SharePreferences.dart';
 
 Future<bool> logOutController() async {
   bool loginStatus    = false;
-  final myUser        = MyUser();
+  final myUser        = SharedMyUser();
   int ? id            = await myUser.getID();
   String ? name       = await myUser.getName();
   String ? email      = await myUser.getEmail();

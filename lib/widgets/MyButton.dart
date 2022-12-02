@@ -1,3 +1,7 @@
+/*
+ * All button have background and icon
+ */
+
 import 'package:flutter/material.dart';
 import 'package:food_app_v2/function/toColor.dart';
 
@@ -16,13 +20,12 @@ class MyButton extends StatefulWidget
   late double ? textSize;
   late String ? fontFamily;
   late FontWeight ? fontWeight;
-  late dynamic onpress;
 
   MyButton({
     this.width=double.infinity,
     this.height=67,
     this.bgColor="#53B175",
-    this.borderRadius=10.0,
+    this.borderRadius=19.0,
     this.textColor="#ffffff",
     this.text=null,
     this.description=null,
@@ -32,7 +35,6 @@ class MyButton extends StatefulWidget
     this.textSize=16.0,
     this.fontFamily="Gilroy",
     this.fontWeight=FontWeight.w600,
-    this.onpress=null
   });
 
   @override
@@ -54,10 +56,7 @@ class _MyButton extends State<MyButton>
           Radius.circular(this.widget.borderRadius!.toDouble())
         )
       ),
-      child: TextButton(
-        onPressed: () => setState(() {
-          return (this.widget.onpress != null) ? this.widget.onpress : null;
-        }),
+      child: Container(
         child: (this.widget.text != null) ? Row(
           children: [
             (this.widget.icon != null) ? Container(

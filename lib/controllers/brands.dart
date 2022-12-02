@@ -17,7 +17,7 @@ import 'package:food_app_v2/core/SharePreferences.dart';
 Future<Brands> fetchCategories() async
 {
 
-  final myUser      = MyUser();
+  final myUser      = SharedMyUser();
   final accessToken = myUser.getToken();
 
   final response     = await http.get(

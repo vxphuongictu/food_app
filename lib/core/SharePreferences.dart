@@ -7,7 +7,7 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MyUser
+class SharedMyUser
 {
   // Obtain shared preferences.
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -51,7 +51,7 @@ class MyUser
     return email;
   }
 
-  getToken() async
+  Future<String?> getToken() async
   {
     final SharedPreferences prefs = await _prefs;
     final String ? token = prefs.getString('token');

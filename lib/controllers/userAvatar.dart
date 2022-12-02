@@ -15,7 +15,7 @@ import 'package:food_app_v2/core/SharePreferences.dart';
 
 Future<dynamic> updateAvatar({String ? avatar}) async
 {
-  final myUser    = MyUser();
+  final myUser    = SharedMyUser();
   final userId    = await myUser.getID();
 
   final response   = await http.post(

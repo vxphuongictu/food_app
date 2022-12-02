@@ -1,4 +1,4 @@
-const host                = "https://4903-14-241-82-32.ap.ngrok.io/";
+const host                = "https://c8a6-14-241-82-32.ap.ngrok.io/";
 const api_uri             = "${host}api/";
 
 const api_login           = "${api_uri}login";

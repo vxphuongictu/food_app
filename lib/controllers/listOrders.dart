@@ -16,7 +16,7 @@ import 'package:food_app_v2/models/ListOrders.dart';
 Future<ListOrders> getListOrders() async
 {
 
-  final myUser      = MyUser();
+  final myUser      = SharedMyUser();
   final accessToken = await myUser.getToken();
   final response    = await http.get(
     Uri.parse(api_orders),

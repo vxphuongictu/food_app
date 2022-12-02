@@ -22,7 +22,7 @@ Future<bool> createOrders({
   List ? list_item
 }) async {
   bool orderStatus= false;
-  final myUser    = MyUser();
+  final myUser    = SharedMyUser();
   final userId    = await myUser.getID();
   final response  = await http.post(
     Uri.parse(api_orders),

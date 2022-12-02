@@ -19,7 +19,8 @@ class ProductSearch extends ProductList
     required super.price,
     required super.total_rate,
     required super.total_vote,
-    required super.status
+    required super.status,
+    required super.media
   });
 
   factory ProductSearch.formJson(Map<String, dynamic> json)
@@ -32,7 +33,8 @@ class ProductSearch extends ProductList
         price       : json['price'],
         total_rate  : json['total_rate'],
         total_vote  : json['total_vote'],
-        status      : json['status']
+        status      : json['status'],
+        media       : json['media']
     );
   }
 }

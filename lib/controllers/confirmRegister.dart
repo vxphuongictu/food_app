@@ -22,7 +22,7 @@ Future<bool> confirmRegisterController({required String email, required String c
       'Content-Type'  : 'application/json; charset=UTF-8',
     },
     body: jsonEncode(<String, dynamic>{
-      'user_id'     : MyUser().getID(),
+      'user_id'     : SharedMyUser().getID(),
       'email'       : email,
       'code'        : code
     }),
@@ -30,7 +30,7 @@ Future<bool> confirmRegisterController({required String email, required String c
 
   if (response.statusCode == 201) {
     final userInfo      = jsonDecode(response.body);
-    final storageData   = MyUser();
+    final storageData   = SharedMyUser();
     storageData.set(userInfo['user']['id'], userInfo['user']['name'], userInfo['user']['email'], userInfo['token']);
     loginStatus         = true;
   } else if (response.statusCode == 401) {

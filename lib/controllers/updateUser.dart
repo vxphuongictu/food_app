@@ -17,7 +17,7 @@ import 'package:food_app_v2/models/UpdateUser.dart';
 Future<UpdateUser> updateUser({String ? name, bool ? gender, String ? address, String ? birthday}) async
 {
 
-  final myUser      = MyUser();
+  final myUser      = SharedMyUser();
   final userID      = await myUser.getID();
 
 

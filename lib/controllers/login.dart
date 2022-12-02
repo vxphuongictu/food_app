@@ -3,7 +3,7 @@
  * Api: /api/login
  * Fields: email, password
  * screenshot: https://prnt.sc/gWGYdisoK024
- * Controller: Controllers/login.dart
+ * Controller: Controllers/Login.dart
  * Models:
  */
 
@@ -29,7 +29,7 @@ Future<bool> loginController({required String email, required String password}) 
 
   if (response.statusCode == 201) {
     final userInfo      = jsonDecode(response.body);
-    final storageData   = MyUser();
+    final storageData   = SharedMyUser();
     storageData.set(userInfo['user']['id'], userInfo['user']['name'], userInfo['user']['email'], userInfo['token']);
     loginStatus         = true;
   } else if (response.statusCode == 401) {
@@ -37,6 +37,5 @@ Future<bool> loginController({required String email, required String password}) 
   } else {
     print('Something went wrong!');
   }
-
   return loginStatus;
 }

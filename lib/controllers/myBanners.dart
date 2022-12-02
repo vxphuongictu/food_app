@@ -11,12 +11,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:food_app_v2/core/config.dart';
 import 'package:food_app_v2/core/SharePreferences.dart';
-import 'package:food_app_v2/models/Banner.dart';
+import 'package:food_app_v2/models/MyBanner.dart';
 
-Future<Banner> fetchBanner() async
+Future<List<MyBanner>> fetchBanner() async
 {
-  final myUser      = MyUser();
-  final accessToken = await myUser.getToken();
+  final List<MyBanner> listBanner   = [];
+  final myUser                      = SharedMyUser();
+  final accessToken                 = await myUser.getToken();
 
   final response     = await http.get(
     Uri.parse(api_list_banner),
@@ -24,10 +25,14 @@ Future<Banner> fetchBanner() async
       'Authorization' : "Bearer ${accessToken}"
     }
   );
-
+  
   if (response.statusCode == 201) {
-    final json_decode   = jsonDecode(response.body);
-    return Banner.formJson(json_decode);
+    List<dynamic> json_decode   = jsonDecode(response.body)['list_banner'];
+    for (var element in json_decode) {
+      final data = MyBanner.formJson(element);
+      listBanner.add(data);
+    }
+    return listBanner;
   } else {
     throw Exception("Something went wrong");
   }

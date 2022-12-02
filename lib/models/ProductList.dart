@@ -16,7 +16,8 @@ class ProductList
   late double ? price;
   late int ? total_rate;
   late int ? total_vote;
-  late bool ? status;
+  late int ? status;
+  late String ? media;
 
   ProductList({
     required this.id,
@@ -26,7 +27,9 @@ class ProductList
     required this.price,
     required this.total_rate,
     required this.total_vote,
-    required this.status});
+    required this.status,
+    required this.media
+  });
 
   factory ProductList.formJson(Map<String, dynamic> json)
   {
@@ -38,7 +41,8 @@ class ProductList
       price       : json['price'],
       total_rate  : json['total_rate'],
       total_vote  : json['total_vote'],
-      status      : json['status']
+      status      : json['status'],
+      media       : (json['media'] != null) ? json['media']['url'] : null,
     );
   }
 }

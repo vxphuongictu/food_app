@@ -8,13 +8,15 @@ class MyText extends StatelessWidget
   late String ? fontFamily;
   late FontWeight fontWeight;
   late String ? color;
+  late bool ? overflow;
 
   MyText({
     this.text="Simple Text",
     this.size=18.0,
     this.fontFamily="Gilroy",
     this.fontWeight=FontWeight.w600,
-    this.color="#181725"
+    this.color="#181725",
+    this.overflow=false
   });
 
   @override
@@ -22,6 +24,7 @@ class MyText extends StatelessWidget
     return Container(
       child: Text(
         this.text.toString(),
+        overflow: (this.overflow != false) ? TextOverflow.ellipsis : null,
         style: TextStyle(
           fontWeight: this.fontWeight,
           fontSize: this.size,

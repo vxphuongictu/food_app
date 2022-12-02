@@ -3,8 +3,8 @@
  * Api: /api/banner
  * Fields:
  * screenshot: https://prnt.sc/x38D5iDBFmJS
- * Controller: Controllers/banners.dart
- * Models: models/Banner.dart
+ * Controller: Controllers/myBanners.dart
+ * Models: models/BannerImage.dart
  */
 
 import 'dart:convert';

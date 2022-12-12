@@ -30,7 +30,7 @@ Future<bool> loginController({required String email, required String password}) 
   if (response.statusCode == 201) {
     final userInfo      = jsonDecode(response.body);
     final storageData   = SharedMyUser();
-    storageData.set(userInfo['user']['id'], userInfo['user']['name'], userInfo['user']['email'], userInfo['token']);
+    await storageData.set(userInfo['user']['id'], userInfo['user']['name'], userInfo['user']['email'], userInfo['token']);
     loginStatus         = true;
   } else if (response.statusCode == 401) {
     print('Username or password invalid!');

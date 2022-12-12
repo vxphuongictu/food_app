@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:food_app_v2/function/toColor.dart';
-import 'package:food_app_v2/models/ProductList.dart';
 import 'package:food_app_v2/screens/product/ProductDetails.dart';
 import 'package:food_app_v2/widgets/ItemBox.dart';
-import 'package:food_app_v2/controllers/listProducts.dart';
+import 'package:food_app_v2/controllers/brands.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/widgets/Filter.dart';
+import 'package:food_app_v2/controllers/listProducts.dart';
 
 class Beverages extends StatefulWidget
 {
@@ -19,7 +19,7 @@ class Beverages extends StatefulWidget
 class _Beverages extends State<Beverages>
 {
 
-  late Future<List<ProductList>> fetchProduct;
+  late Future fetchProduct;
 
   @override
   void initState() {
@@ -76,7 +76,7 @@ class _Beverages extends State<Beverages>
   }
 
   Widget productListView() {
-    return FutureBuilder<List<ProductList>>(
+    return FutureBuilder(
       future: fetchProduct,
       builder: (context, snapshot) {
         return Container(
@@ -102,7 +102,7 @@ class _Beverages extends State<Beverages>
                 ),
                 child: ItemBox(
                   title: snapshot.data?[index].title,
-                  price: snapshot.data?[index].price.toString(),
+                  price: snapshot.data?[index].price,
                   shortDescription: snapshot.data?[index].description,
                   thumbnails: snapshot.data?[index].media,
                 ),

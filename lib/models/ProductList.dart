@@ -18,6 +18,7 @@ class ProductList
   late int ? total_vote;
   late int ? status;
   late String ? media;
+  late bool ? isFavourite;
 
   ProductList({
     required this.id,
@@ -28,7 +29,8 @@ class ProductList
     required this.total_rate,
     required this.total_vote,
     required this.status,
-    required this.media
+    required this.media,
+    required this.isFavourite
   });
 
   factory ProductList.formJson(Map<String, dynamic> json)
@@ -43,6 +45,7 @@ class ProductList
       total_vote  : json['total_vote'],
       status      : json['status'],
       media       : (json['media'] != null) ? json['media']['url'] : null,
+      isFavourite : json['isFavourite']
     );
   }
 }

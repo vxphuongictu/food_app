@@ -4,15 +4,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:food_app_v2/core/SharePreferences.dart';
 import 'package:food_app_v2/screens/login/AuthBanner.dart';
 import 'package:food_app_v2/widgets/MyButton.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
-import 'package:food_app_v2/widgets/MyInput.dart';
 import 'package:food_app_v2/screens/login/BottomText.dart';
 import 'package:food_app_v2/controllers/login.dart';
-import 'package:food_app_v2/screens/home/HomeScreen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget
 {
@@ -31,6 +27,11 @@ class _Login extends State<StatefulWidget>
 
   TextEditingController username = TextEditingController(text: "admin@admin.com");
   TextEditingController password = TextEditingController(text: "password");
+
+  @override
+  void initState() {
+    EasyLoading.dismiss();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +112,7 @@ class _Login extends State<StatefulWidget>
                         if (this.login == false) {
                           EasyLoading.showToast('Username or password invalid!');
                         } else {
-                          Navigator.pushNamed(context, '/');
+                          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
                         }
                       },
                       child: MyButton(

@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:food_app_v2/core/SharePreferences.dart';
+import 'package:food_app_v2/core/config.dart';
 import 'package:food_app_v2/function/toColor.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 
 
 class CartItem extends StatefulWidget
 {
+  late int ? productID;
+  late String ? productName;
+  late String ? productDescription;
+  late int ? productQuantity;
+  late String ? productThumbnails;
+  late double ? productPrice;
+
+  CartItem({
+    this.productID,
+    this.productName,
+    this.productDescription,
+    this.productQuantity,
+    this.productThumbnails,
+    this.productPrice
+  });
+
   @override
   State<CartItem> createState() {
     return _CartItem();
@@ -14,16 +32,21 @@ class CartItem extends StatefulWidget
 
 class _CartItem extends State<CartItem>
 {
-  int quantity = 1;
+
+  bool itemIsCart = true;
+  late double ? totalPrice;
   late TextEditingController ? inputQuantity;
+
 
   @override
   Widget build(BuildContext context) {
-    return item();
+    return (this.itemIsCart) ? item() : Container();
   }
 
   Widget item() {
-    inputQuantity   = TextEditingController(text: "${this.quantity}");
+    inputQuantity   = TextEditingController(text: "${this.widget.productQuantity}");
+
+    this.totalPrice = (this.widget.productQuantity! * this.widget.productPrice!.toInt()).toDouble();
 
     return Container(
       padding: EdgeInsets.only(top: 30.0, bottom: 30.0),
@@ -40,7 +63,7 @@ class _CartItem extends State<CartItem>
           SizedBox(
             width: 70.0,
             height: 70.0,
-            child: Image.asset("assets/images/product.png"),
+            child: (this.widget.productThumbnails != null) ? Image.network("${host}${this.widget.productThumbnails}") : Image.asset("assets/images/product.png"),
           ),
           Expanded(
             child: Container(
@@ -54,14 +77,17 @@ class _CartItem extends State<CartItem>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         MyText(
-                          text: "Bell Pepper Red",
+                          text: this.widget.productName,
                           size: 16.0,
                           fontFamily: "Gilroy-Bold",
                           fontWeight: FontWeight.w100,
                         ),
                         IconButton(
-                          onPressed: () {
-                            print('close');
+                          onPressed: () async {
+                            await SharedMyCart().clearItem(this.widget.productID);
+                            setState(() {
+                              this.itemIsCart = false;
+                            });
                           },
                           icon: Icon(
                             Icons.close_outlined,
@@ -74,7 +100,7 @@ class _CartItem extends State<CartItem>
                   Container(
                     margin: EdgeInsets.only(bottom: 13.0),
                     child:  MyText(
-                      text: "1kg, Price",
+                      text: this.widget.productDescription,
                       fontFamily: "Gilroy-Medium",
                       size: 14.0,
                       color: '#7C7C7C',
@@ -96,7 +122,8 @@ class _CartItem extends State<CartItem>
                         ),
                         child: IconButton(
                           onPressed: ()=> setState(() {
-                            quantity = (quantity < 1) ? 0 : (quantity - 1);
+                            this.widget.productQuantity = (this.widget.productQuantity! < 1) ? 0 : (this.widget.productQuantity! - 1);
+                            SharedMyCart().update(productID: this.widget.productID, quantity: this.widget.productQuantity);
                           }),
                           icon: const FaIcon(
                             FontAwesomeIcons.minus,
@@ -131,7 +158,8 @@ class _CartItem extends State<CartItem>
                         ),
                         child: IconButton(
                           onPressed: ()=> setState(() {
-                            quantity = (quantity < 1) ? 0 : (quantity - 1);
+                            this.widget.productQuantity = this.widget.productQuantity! + 1;
+                            SharedMyCart().update(productID: this.widget.productID, quantity: this.widget.productQuantity);
                           }),
                           icon: const FaIcon(
                             FontAwesomeIcons.plus,
@@ -144,7 +172,7 @@ class _CartItem extends State<CartItem>
                           margin: EdgeInsets.only(right: 15.0),
                           alignment: AlignmentDirectional.bottomEnd,
                           child: MyText(
-                            text: "\$15.50",
+                            text: "\$${(this.totalPrice)?.toStringAsFixed(3)}",
                             size: 18.0,
                           ),
                         ),

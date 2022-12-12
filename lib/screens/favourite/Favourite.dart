@@ -19,7 +19,7 @@ class Favourite extends StatefulWidget
 class _Favourite extends State<Favourite>
 {
 
-  late Future<List<ProductList>> ? products;
+  late Future ? products;
 
   @override
   void initState() {
@@ -63,7 +63,7 @@ class _Favourite extends State<Favourite>
   }
   Widget myFavourite()
   {
-    return FutureBuilder<List<ProductList>>(
+    return FutureBuilder(
       future: products,
       builder: (context, snapshot) {
         return ListView.builder(

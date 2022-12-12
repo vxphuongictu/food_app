@@ -16,6 +16,7 @@ class Categories
   late String ? background;
   late String ? border_color;
   late String ? description;
+  late String ? media;
 
   Categories({
     required this.id,
@@ -24,7 +25,8 @@ class Categories
     required this.title,
     required this.background,
     required this.border_color,
-    required this.description
+    required this.description,
+    required this.media,
   });
 
   factory Categories.formJson(Map<String, dynamic> json)
@@ -36,7 +38,8 @@ class Categories
       title     : json['title'],
       background    : json['background'],
       border_color  : json['border_color'],
-      description   : json['description']
+      description   : json['description'],
+      media         : (json['media'] != null) ? json['media']['url'] : null,
     );
   }
 }

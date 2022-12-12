@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:food_app_v2/controllers/listProducts.dart';
+import 'package:food_app_v2/models/ProductList.dart';
 import 'package:food_app_v2/widgets/Logo.dart';
 import 'package:food_app_v2/widgets/Search.dart';
 import 'package:food_app_v2/widgets/BannerImage.dart';
@@ -19,6 +21,15 @@ class HomeScreen extends StatefulWidget
 
 class _HomeScreen extends State<HomeScreen>
 {
+
+  late Future<dynamic> listProducts;
+
+  @override
+  void initState() {
+    EasyLoading.show(status: "Loading ...");
+    listProducts  = fetchProducts();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,21 +57,29 @@ class _HomeScreen extends State<HomeScreen>
 
   Widget myHome()
   {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Search(
-              hintText: "Search Store",
-              color: "#7C7C7C"
-          ),
-          breakLine(),
-          const BannerImage(),
-          breakLine(),
-          const ExclusiveOffer(),
-          breakLine(),
-          const BestSelling()
-        ],
-      ),
+    return FutureBuilder<dynamic>(
+        future: listProducts,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            EasyLoading.dismiss();
+          }
+          return  SingleChildScrollView(
+            child: Column(
+              children: [
+                Search(
+                    hintText: "Search Store",
+                    color: "#7C7C7C"
+                ),
+                breakLine(),
+                const BannerImage(),
+                breakLine(),
+                ExclusiveOffer(data: snapshot.data),
+                breakLine(),
+                BestSelling(data: snapshot.data)
+              ],
+            ),
+          );
+        }
     );
   }
 

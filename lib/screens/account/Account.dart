@@ -50,10 +50,9 @@ class _Account extends State<Account>
                 onTap: () async {
                   EasyLoading.show(status: 'Logout...');
                   this.logout  = await logOutController();
-                  print(logout.toString());
                   if (this.logout == true) {
                     setState(() {
-                      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
                     });
                   } else {
                     EasyLoading.showToast("Error...");

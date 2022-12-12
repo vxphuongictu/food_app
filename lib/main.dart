@@ -1,44 +1,44 @@
-
-import 'package:awesome_bottom_navigation/awesome_bottom_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:food_app_v2/function/toColor.dart';
-import 'package:food_app_v2/screens/home/HomeScreen.dart';
-import 'package:food_app_v2/screens/explore/Explore.dart';
 import 'package:food_app_v2/core/SharePreferences.dart';
-import 'package:food_app_v2/screens/cart/Cart.dart';
-import 'package:food_app_v2/screens/favourite/Favourite.dart';
-import 'package:food_app_v2/screens/account/Account.dart';
+import 'package:food_app_v2/screens/bestSelling/BestSelling.dart';
 import 'package:food_app_v2/screens/login/Login.dart';
+import 'package:food_app_v2/screens/HomeBase.dart';
+import 'package:food_app_v2/screens/exclusive/ExclusiveOffer.dart';
 
 void main()
 {
-  runApp(MyHomePage());
+  runApp(myRoute());
 }
 
-class MyHomePage extends StatefulWidget
+class myRoute extends StatefulWidget
 {
-  bool ? loginStatus  = false;
-  int ? tabIndex = 0;
+  bool ? loginStatus  = true;
 
-  MyHomePage({super.key});
+  myRoute({super.key});
 
   @override
-  State<MyHomePage> createState() {
-    return _MyHomePage();
+  State<myRoute> createState() {
+    return _myRoute();
   }
 }
 
-class _MyHomePage extends State<MyHomePage>
+class _myRoute extends State<myRoute>
 {
 
   late Future<String?> token;
+  bool loginStatus = false;
 
   @override
   void initState() {
-    // token = SharedMyUser().getToken();
     super.initState();
+    this.token = SharedMyUser().getToken();
+    this.token.then((value) {
+      setState(() {
+        this.loginStatus = (value != null && value != "") ? true : false;
+      });
+    });
   }
 
   @override
@@ -55,66 +55,14 @@ class _MyHomePage extends State<MyHomePage>
       routes: {
         '/': (context) => initWidget(),
         '/login': (context) => Login(),
-        '/home': (context) => Home()
+        '/home': (context) => HomeBase(),
+        '/exclusive': (context) => ExclusiveOffer(),
+        '/best-selling': (context) => BestSelling()
       },
     );
   }
 
-  Widget initWidget()
-  {
-
-    this.token  = SharedMyUser().getToken();
-    return FutureBuilder<String?>(
-      future: this.token,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Home();
-        } else {
-          return Login();
-        }
-      },
-    );
-  }
-
-  Widget Home()
-  {
-    List<dynamic> screens = [
-      HomeScreen(),
-      Explore(),
-      Cart(),
-      Favourite(),
-      Account(),
-    ];
-
-    return Scaffold(
-      body: screens[this.widget.tabIndex!],
-      bottomNavigationBar: AwesomeBottomNav(
-        icons: const [
-          Icons.house_outlined,
-          Icons.manage_search,
-          Icons.shopping_cart_outlined,
-          Icons.favorite_border,
-          Icons.person_outline
-        ],
-        highlightedIcons: const [
-          Icons.house_outlined,
-          Icons.manage_search,
-          Icons.shopping_cart_outlined,
-          Icons.favorite_border,
-          Icons.person_outline,
-        ],
-        onTapped: (int value) {
-          setState(() {
-            if (screens.length > value) {
-              this.widget.tabIndex = value;
-            }
-          });
-        },
-        bodyBgColor: Colors.transparent,
-        highlightColor: '#53B175'.toColor(),
-        navFgColor: Colors.grey.withOpacity(1),
-        navBgColor: Colors.white,
-      ),
-    );
+  Widget initWidget() {
+    return (this.loginStatus == true) ? HomeBase() : Login();
   }
 }

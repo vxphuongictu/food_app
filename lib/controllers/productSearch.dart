@@ -18,14 +18,17 @@ Future<ProductSearch> fetchDetails({required String str}) async
 {
   final uri         = api_search + str;
   final myUser      = SharedMyUser();
-  final accessToken = myUser.getToken();
+  final accessToken = await myUser.getToken();
   final response     = await http.get(
       Uri.parse(uri),
       headers: {
         'Authorization' : 'Bearer ${accessToken}',
       }
   );
-
+  print(uri);
+  print(accessToken);
+  print(response.statusCode);
+  print(response.body);
   if (response.statusCode == 201) {
     final json_decode   = jsonDecode(response.body);
     return ProductSearch.formJson(json_decode);

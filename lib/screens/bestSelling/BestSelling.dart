@@ -1,36 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:food_app_v2/core/config.dart';
-import 'package:food_app_v2/function/toColor.dart';
-import 'package:food_app_v2/models/Brands.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
+import 'package:food_app_v2/controllers/listProducts.dart';
+import 'package:food_app_v2/screens/product/ProductDetails.dart';
+import 'package:food_app_v2/widgets/ItemBox.dart';
 import 'package:food_app_v2/widgets/Search.dart';
-import 'package:food_app_v2/widgets/FindProductBoxItem.dart';
-import 'package:food_app_v2/screens/beverages/Beverages.dart';
-import 'package:food_app_v2/controllers/brands.dart';
 
 
-class Explore extends StatefulWidget
+class BestSelling extends StatefulWidget
 {
-
   @override
-  State<Explore> createState() {
-    return _Explore();
+  State<BestSelling> createState() {
+    return _BestSelling();
   }
 }
 
-class _Explore extends State<Explore>
+
+class _BestSelling extends State<BestSelling>
 {
-  List<dynamic> productArr   = [];
 
-
-  late Future<List<Brands>> listCats;
+  late Future listProducts;
 
   @override
   void initState() {
     super.initState();
-    listCats = fetchBrand();
+    this.listProducts = fetchProducts();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +39,7 @@ class _Explore extends State<Explore>
             Container(
               margin: EdgeInsets.only(bottom: 30.0),
               child: MyText(
-                text: "Find Products",
+                text: "Best Selling",
                 fontFamily: "Gilroy-Bold",
                 fontWeight: FontWeight.w100,
                 size: 20.0,
@@ -56,7 +50,7 @@ class _Explore extends State<Explore>
         ),
       ),
       body: SafeArea(
-        minimum: EdgeInsets.only(left: 25.0, right: 25.0),
+        minimum: EdgeInsets.only(left: 25.0, right: 10.0),
         child: listProduct(),
       ),
     );
@@ -65,25 +59,14 @@ class _Explore extends State<Explore>
   Widget listProduct()
   {
     return FutureBuilder(
-      future: this.listCats,
+      future: this.listProducts,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final length = snapshot.data?.length;
-          for (var i = 0; i < length!; i ++) {
-            this.productArr.add(
-                FindProductBoxItem(
-                    productName: snapshot.data?[i].title,
-                    borderColor: "${snapshot.data?[i].border_color}".toColor(),
-                    bgColor: "${snapshot.data?[i].background}".toColor(),
-                    thumbnails: "${snapshot.data?[i].media}",
-                )
-            );
-          }
           return GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 8,
-                childAspectRatio: .85,
+                childAspectRatio: .65,
                 mainAxisSpacing: 8
             ),
             itemCount: snapshot.data?.length,
@@ -93,16 +76,24 @@ class _Explore extends State<Explore>
                 onTap: () =>
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Beverages()),
+                      MaterialPageRoute(builder: (context) => ProductDetail(
+                        productID: snapshot.data[index].id,
+                      )),
                     ),
-                child: this.productArr[index],
+                child: ItemBox(
+                  productID: snapshot.data[index].id,
+                  title: snapshot.data[index].title,
+                  thumbnails: snapshot.data[index].media,
+                  shortDescription: snapshot.data[index].description,
+                  price: snapshot.data[index].price,
+                ),
               );
             },
           );
         } else {
           return Container();
         }
-      }
+      },
     );
   }
 }

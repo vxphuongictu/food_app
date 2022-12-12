@@ -3,6 +3,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:food_app_v2/core/SharePreferences.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/widgets/MyButton.dart';
 import 'package:food_app_v2/function/toColor.dart';
@@ -12,13 +13,15 @@ import 'package:food_app_v2/core/config.dart';
 class ItemBox extends StatefulWidget
 {
 
+  late int ? productID;
   late String ? thumbnails;
   late String ? title;
   late String ? shortDescription;
-  late String ? price;
+  late double ? price;
   late dynamic onpress;
 
   ItemBox({
+    this.productID,
     this.thumbnails,
     this.title,
     this.shortDescription,
@@ -94,7 +97,15 @@ class _ItemBox extends State<ItemBox>
                         children: [
                           if (this.widget.price != "") MyText(text: "\$${this.widget.price}", fontFamily: 'Gilroy', size: 18.0, color: '#181725'),
                           InkWell(
-                            onTap: () => {},
+                            onTap: () {
+                              SharedMyCart().add(
+                                productID: this.widget.productID,
+                                productName: this.widget.title,
+                                productDescription: this.widget.shortDescription,
+                                productPrice: this.widget.price,
+                                productThumbnails: this.widget.thumbnails
+                              );
+                            },
                             child: MyButton(width: 45.67, height: 45.67, borderRadius: 18.0, icon: Icons.add),
                           )
                         ],

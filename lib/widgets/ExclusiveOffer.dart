@@ -3,16 +3,18 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:food_app_v2/controllers/listProducts.dart';
-import 'package:food_app_v2/models/ProductList.dart';
 import 'package:food_app_v2/widgets/ItemBox.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/screens/product/ProductDetails.dart';
+import 'package:food_app_v2/screens/exclusive/ExclusiveOffer.dart';
 
 
 class ExclusiveOffer extends StatefulWidget
 {
-  const ExclusiveOffer({super.key});
+
+  late List<dynamic> ? data;
+
+  ExclusiveOffer({this.data});
 
   @override
   State<ExclusiveOffer> createState() {
@@ -23,36 +25,17 @@ class ExclusiveOffer extends StatefulWidget
 class _ExclusiveOffer extends State<ExclusiveOffer>
 {
 
-  late Future<List<ProductList>> listProducts;
-
-  @override
-  void initState() {
-    super.initState();
-    listProducts  = fetchProducts();
-  }
-
   @override
   Widget build(BuildContext context) {
     return myList();
   }
 
   Widget myList() {
-    return FutureBuilder<List<ProductList>>(
-      future: listProducts,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final data = snapshot.data!;
-          print(data.length);
-          return Column(
-            children: [
-              title(),
-              productListView()
-            ],
-          );
-        } else {
-          return Container();
-        }
-      },
+    return Column(
+      children: [
+        title(),
+        productListView()
+      ],
     );
   }
 
@@ -67,7 +50,7 @@ class _ExclusiveOffer extends State<ExclusiveOffer>
         ),
         TextButton(
           onPressed: () {
-            print('123');
+            Navigator.pushNamedAndRemoveUntil(context, '/exclusive', (route) => false);
           },
           child: MyText(
             text: "See all",
@@ -82,30 +65,26 @@ class _ExclusiveOffer extends State<ExclusiveOffer>
   Widget productListView() {
     return SizedBox(
         height: 300.0,
-        child: FutureBuilder<List<ProductList>>(
-          future: listProducts,
-          builder: (context, snapshot) {
-            return ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data?.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProductDetail(productID: snapshot.data?[index].id),
-                    )
-                  ),
-                  child: ItemBox(
-                    title: snapshot.data?[index].title,
-                    price: snapshot.data?[index].price.toString(),
-                    shortDescription: snapshot.data?[index].description,
-                    thumbnails: snapshot.data?[index].media,
-                    onpress: () => ProductDetail(productID: snapshot.data?[index].id),
-                  ),
-                );
-              },
+        child: ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: this.widget.data?.length,
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProductDetail(productID: this.widget.data?[index].id),
+                  )
+              ),
+              child: ItemBox(
+                productID: this.widget.data?[index].id,
+                title: this.widget.data?[index].title,
+                price: this.widget.data?[index].price,
+                shortDescription: this.widget.data?[index].description,
+                thumbnails: this.widget.data?[index].media,
+                onpress: () => ProductDetail(productID: this.widget.data?[index].id),
+              ),
             );
           },
         ),

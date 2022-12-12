@@ -27,7 +27,7 @@ Future<ProductDetails> fetchDetails({required int product_id}) async
   );
 
   if (response.statusCode == 201) {
-    final json_decode   = jsonDecode(response.body);
+    final json_decode   = jsonDecode(response.body)['data_product'];
     return ProductDetails.formJson(json_decode);
   } else {
     throw Exception("Something went wrong");

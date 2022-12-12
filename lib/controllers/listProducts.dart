@@ -13,11 +13,11 @@ import 'package:food_app_v2/core/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:food_app_v2/core/SharePreferences.dart';
 
-Future<List<ProductList>> fetchProducts() async
+Future fetchProducts() async
 {
-  final myUser                    = SharedMyUser();
-  final accessToken               = await myUser.getToken();
-  final List<ProductList> productsArr = [];
+  final myUser                        = SharedMyUser();
+  final accessToken                   = await myUser.getToken();
+  final List<ProductList> listProduct = [];
 
   final response       = await http.get(
     Uri.parse(api_list_products),
@@ -30,10 +30,10 @@ Future<List<ProductList>> fetchProducts() async
     List<dynamic> json_decode   = jsonDecode(response.body)['list_product']['data'];
     for (var product in json_decode) {
       final data                = ProductList.formJson(product);
-      productsArr.add(data);
+      listProduct.add(data);
     }
+    return listProduct;
   } else {
     throw Exception("Something went wrong");
   }
-  return productsArr;
 }

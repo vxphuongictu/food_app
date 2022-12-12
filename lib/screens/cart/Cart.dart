@@ -1,11 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:food_app_v2/controllers/listProducts.dart';
-import 'package:food_app_v2/models/ProductList.dart';
+import 'package:food_app_v2/models/MyCart.dart';
 import 'package:food_app_v2/screens/product/ProductDetails.dart';
 import 'package:food_app_v2/widgets/CartItem.dart';
 import 'package:food_app_v2/widgets/MyButton.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
-import 'package:food_app_v2/widgets/Checkout.dart';
+import 'package:food_app_v2/controllers/listCart.dart';
 
 
 class Cart extends StatefulWidget
@@ -19,11 +19,11 @@ class Cart extends StatefulWidget
 class _Cart extends State<Cart>
 {
 
-  late Future<List<ProductList>> ? products;
+  late Future<List<MyCart>> listCart;
 
   @override
   void initState() {
-    products  = fetchProducts();
+    this.listCart  = fetchCart();
   }
 
   @override
@@ -67,21 +67,36 @@ class _Cart extends State<Cart>
   }
   Widget myCart()
   {
-    return FutureBuilder<List<ProductList>>(
-      future: products,
+    return FutureBuilder<List<MyCart>>(
+      future: this.listCart,
       builder: (context, snapshot) {
-        return ListView.builder(
-          itemCount: snapshot.data?.length,
-          itemBuilder: (context, index) => InkWell(
-            onTap: ()=> Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProductDetail(productID: snapshot.data?[index].id),
-              )
-            ),
-            child: CartItem(),
-          ),
-        );
+        if (snapshot.hasData) {
+          return ListView.builder(
+            itemCount: snapshot.data?.length,
+            itemBuilder: (context, index) =>
+                InkWell(
+                  onTap: () =>
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ProductDetail(
+                                    productID: snapshot.data?[index].productID),
+                          )
+                      ),
+                  child: CartItem(
+                    productID: snapshot.data?[index].productID,
+                    productThumbnails: snapshot.data?[index].productThumbnails,
+                    productDescription: snapshot.data?[index]
+                        .productDescription,
+                    productName: snapshot.data?[index].productName,
+                    productQuantity: snapshot.data?[index].productQuantity,
+                    productPrice: snapshot.data?[index].productPrice,
+                  ),
+                ),
+          );
+        }
+        return Container();
       },
     );
   }

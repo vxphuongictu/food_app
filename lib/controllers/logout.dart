@@ -15,31 +15,31 @@ import 'package:food_app_v2/core/SharePreferences.dart';
 
 
 Future<bool> logOutController() async {
-  bool loginStatus    = false;
+  bool loginStatus    = true;
   final myUser        = SharedMyUser();
-  int ? id            = await myUser.getID();
-  String ? name       = await myUser.getName();
-  String ? email      = await myUser.getEmail();
-  String ? token      = await myUser.getToken();
-  final accessToken   = "Bearer " + token.toString();
-
-  final response      = await http.post(
-    Uri.parse(api_logout),
-    headers: {
-      'Content-Type'  : 'application/json; charset=UTF-8',
-      'Authorization' : accessToken,
-    },
-    body: jsonEncode(<String, String>{}),
-  );
-
-  if (response.statusCode == 200) {
-    myUser.remove(id, name, email, token);
-    loginStatus         = true;
-  } else if (response.statusCode == 401) {
-    print('Username or password invalid!');
-  } else {
-    print('Something went wrong!');
-  }
-
+  await myUser.logOut();
+  // int ? id            = await myUser.getID();
+  // String ? name       = await myUser.getName();
+  // String ? email      = await myUser.getEmail();
+  // String ? token      = await myUser.getToken();
+  // final accessToken   = "Bearer " + token.toString();
+  //
+  // final response      = await http.post(
+  //   Uri.parse(api_logout),
+  //   headers: {
+  //     'Content-Type'  : 'application/json; charset=UTF-8',
+  //     'Authorization' : accessToken,
+  //   },
+  //   body: jsonEncode(<String, String>{}),
+  // );
+  //
+  // if (response.statusCode == 200) {
+  //   myUser.remove(id, name, email, token);
+  //   loginStatus         = true;
+  // } else if (response.statusCode == 401) {
+  //   print('Username or password invalid!');
+  // } else {
+  //   print('Something went wrong!');
+  // }
   return loginStatus;
 }

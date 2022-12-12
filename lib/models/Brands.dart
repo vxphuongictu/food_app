@@ -18,19 +18,21 @@ class Brands extends Categories
     required super.title,
     required super.background,
     required super.border_color,
-    required super.description
+    required super.description,
+    required super.media
   });
 
   factory Brands.formJson(Map<String, dynamic> json)
   {
     return Brands(
-        id        : json['id'],
-        media_id  : json['media_id'],
-        user_id   : json['user_id'],
-        title     : json['title'],
+        id            : json['id'],
+        media_id      : json['media_id'],
+        user_id       : json['user_id'],
+        title         : json['title'],
         background    : json['background'],
         border_color  : json['border_color'],
-        description   : json['description']
+        description   : json['description'],
+        media         : (json['media'] != null) ? json['media']['url'] : null,
     );
   }
 }

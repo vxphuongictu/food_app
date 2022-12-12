@@ -14,13 +14,12 @@ import 'package:food_app_v2/models/Brands.dart';
 import 'package:food_app_v2/core/SharePreferences.dart';
 
 
-Future<Brands> fetchCategories() async
+Future<List<Brands>> fetchBrand() async
 {
-
-  final myUser      = SharedMyUser();
-  final accessToken = myUser.getToken();
-
-  final response     = await http.get(
+  final myUser            = SharedMyUser();
+  final accessToken       = await myUser.getToken();
+  List<Brands> allBrands  = [];
+  final response          = await http.get(
       Uri.parse(api_list_brand),
       headers: {
         'Authorization' : "Bearer ${accessToken}",
@@ -28,8 +27,13 @@ Future<Brands> fetchCategories() async
   );
 
   if (response.statusCode == 201) {
-    final json_decode     = jsonDecode(response.body);
-    return Brands.formJson(json_decode);
+    List<dynamic> json_decode     = jsonDecode(response.body)['list_brand'];
+    for (var i = 0; i < json_decode.length; i ++) {
+      final item  = json_decode[i];
+      final data  = Brands.formJson(item);
+      allBrands.add(data);
+    }
+    return allBrands;
   } else {
     throw Exception("Something went wrong");
   }

@@ -174,11 +174,15 @@ class SharedMyCart
   {
     int ? quantity      = 1;
     List<String> myCart  = await getAll();
-    for (var i = 0; i < myCart.length; i ++) {
-      final item  = jsonDecode(myCart[i]);
-      if (item['productID'] == productID) {
-        quantity = item['productQuantity'];
+    try {
+      for (var i = 0; i < myCart.length; i ++) {
+        final item = jsonDecode(myCart[i]);
+        if (item['productID'] == productID) {
+          quantity = item['productQuantity'];
+        }
       }
+    } catch (e) {
+      //
     }
     return quantity;
   }

@@ -135,7 +135,7 @@ class _ProductDetail extends State<ProductDetail>
                       disableColor: Colors.grey,
                       indicatorBottom: false,
                       height: 300.0,
-                      customizedIndicators: IndicatorModel.animation(width: 5.0,
+                      customizedIndicators: const IndicatorModel.animation(width: 5.0,
                           height: 3.0,
                           spaceBetween: 4.0,
                           widthAnimation: 20.0),
@@ -194,9 +194,6 @@ class _ProductDetail extends State<ProductDetail>
                                         this.quantity =
                                         (this.quantity! < 1) ? 0 : (this
                                             .quantity! - 1);
-                                        SharedMyCart().update(
-                                            productID: this.widget.productID,
-                                            quantity: this.quantity?.toInt());
                                       }),
                                   icon: const FaIcon(
                                     FontAwesomeIcons.minus,
@@ -229,9 +226,6 @@ class _ProductDetail extends State<ProductDetail>
                                   onPressed: () =>
                                       setState(() {
                                         this.quantity = (this.quantity! + 1);
-                                        SharedMyCart().update(
-                                            productID: this.widget.productID,
-                                            quantity: this.quantity?.toInt());
                                       }),
                                   icon: const FaIcon(
                                     FontAwesomeIcons.plus,
@@ -367,9 +361,21 @@ class _ProductDetail extends State<ProductDetail>
                             ],
                           ),
                         ),
-                        MyButton(
-                          text: "Add To Basket",
-                          textSize: 18.0,
+                        InkWell(
+                          onTap: () => setState(() {
+                            SharedMyCart().add(
+                              productID: this.widget.productID,
+                              productDescription: "${snapshot.data?.description}",
+                              productPrice: (snapshot.data?.price)?.toDouble(),
+                              productThumbnails: "${snapshot.data?.media}",
+                              productName: "${snapshot.data?.title}",
+                              productQuantity: this.quantity
+                            );
+                          }),
+                          child: MyButton(
+                            text: "Add To Basket",
+                            textSize: 18.0,
+                          ),
                         ),
                       ],
                     ),

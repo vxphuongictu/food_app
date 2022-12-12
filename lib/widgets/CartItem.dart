@@ -45,9 +45,7 @@ class _CartItem extends State<CartItem>
 
   Widget item() {
     inputQuantity   = TextEditingController(text: "${this.widget.productQuantity}");
-
-    this.totalPrice = (this.widget.productQuantity! * this.widget.productPrice!.toInt()).toDouble();
-
+    this.totalPrice = ((this.widget.productQuantity)!.toDouble() * this.widget.productPrice!);
     return Container(
       padding: EdgeInsets.only(top: 30.0, bottom: 30.0),
       decoration: BoxDecoration(
@@ -63,7 +61,7 @@ class _CartItem extends State<CartItem>
           SizedBox(
             width: 70.0,
             height: 70.0,
-            child: (this.widget.productThumbnails != null) ? Image.network("${host}${this.widget.productThumbnails}") : Image.asset("assets/images/product.png"),
+            child: (this.widget.productThumbnails != null && this.widget.productThumbnails != "null") ? Image.network("${host}${this.widget.productThumbnails}") : Image.asset("assets/images/product.png"),
           ),
           Expanded(
             child: Container(

@@ -77,7 +77,7 @@ class SharedMyCart
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
 
-  add({int ? productID, String ? productName, String ? productDescription, String ? productThumbnails, double ? productPrice}) async
+  add({int ? productID, String ? productName, String ? productDescription, int ? productQuantity, String ? productThumbnails, double ? productPrice}) async
   {
     bool ? isAvailable            = false; // check product is available in cart
     final SharedPreferences prefs = await _prefs;
@@ -86,12 +86,12 @@ class SharedMyCart
       'productID': productID,
       'productName': productName,
       'productDescription': productDescription,
-      'productQuantity': 1,
+      'productQuantity': (productQuantity) != null ? productQuantity : 1,
       'productThumbnails': productThumbnails,
       'productPrice': productPrice,
       'productTotalPrice': productPrice
     };
-
+    
     try {
       if (cart.length > 0) {
         cart.forEach((element) {
@@ -185,27 +185,5 @@ class SharedMyCart
       //
     }
     return quantity;
-  }
-}
-
-
-class SharedMyFavourite {
-  // Obtain shared preferences.
-  List<String> listFavourite = [];
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
-
-  add(
-      {int ? productID, String ? productName, String ? productDescription, String ? productThumbnails, double ? productPrice}) async
-  {
-    bool ? isAvailable = false; // check product is available in cart
-    final SharedPreferences prefs = await _prefs;
-    final data = {
-      'productID': productID,
-      'productName': productName,
-      'productDescription': productDescription,
-      'productThumbnails': productThumbnails,
-      'productPrice': productPrice,
-    };
   }
 }

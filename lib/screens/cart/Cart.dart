@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:food_app_v2/models/MyCart.dart';
 import 'package:food_app_v2/screens/product/ProductDetails.dart';
@@ -20,6 +19,7 @@ class _Cart extends State<Cart>
 {
 
   late Future<List<MyCart>> listCart;
+  double totalPriceToCheckOut = 0.0;
 
   @override
   void initState() {
@@ -40,60 +40,61 @@ class _Cart extends State<Cart>
         ),
         body: SafeArea(
           minimum: EdgeInsets.only(left: 20.0, right: 20.0),
-          child: cartScreen(),
+          child: myCart(),
         ),
     );
   }
 
-  Widget cartScreen()
-  {
-    return Column(
-      children: [
-        Expanded(
-          child: myCart(),
-        ),
-        Container(
-          margin: EdgeInsets.only(bottom: 24.0),
-          child: TextButton(
-            onPressed: () => {},
-            child: MyButton(
-              text: "Go to Checkout",
-              description: "\$12.96",
-            ),
-          ),
-        )
-      ],
-    );
-  }
   Widget myCart()
   {
     return FutureBuilder<List<MyCart>>(
       future: this.listCart,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return ListView.builder(
-            itemCount: snapshot.data?.length,
-            itemBuilder: (context, index) =>
-                InkWell(
-                  onTap: () =>
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ProductDetail(
-                                    productID: snapshot.data?[index].productID),
-                          )
+          for (var i = 0; i < snapshot.data!.length; i ++) {
+            this.totalPriceToCheckOut = this.totalPriceToCheckOut + snapshot.data![i].productTotalPrice!;
+          }
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: snapshot.data?.length,
+                  itemBuilder: (context, index) =>
+                      InkWell(
+                        onTap: () =>
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProductDetail(
+                                          productID: snapshot.data?[index].productID),
+                                )
+                            ),
+                        child: CartItem(
+                          productID: snapshot.data?[index].productID,
+                          productThumbnails: snapshot.data?[index].productThumbnails,
+                          productDescription: snapshot.data?[index]
+                              .productDescription,
+                          productName: snapshot.data?[index].productName,
+                          productQuantity: snapshot.data?[index].productQuantity,
+                          productPrice: snapshot.data?[index].productPrice,
+                        ),
                       ),
-                  child: CartItem(
-                    productID: snapshot.data?[index].productID,
-                    productThumbnails: snapshot.data?[index].productThumbnails,
-                    productDescription: snapshot.data?[index]
-                        .productDescription,
-                    productName: snapshot.data?[index].productName,
-                    productQuantity: snapshot.data?[index].productQuantity,
-                    productPrice: snapshot.data?[index].productPrice,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 24.0),
+                child: TextButton(
+                  onPressed: () => {
+                    print('123123')
+                  },
+                  child: MyButton(
+                    text: "Go to Checkout",
+                    description: (this.totalPriceToCheckOut != null) ? "\$${(this.totalPriceToCheckOut).toStringAsFixed(3)}" : "\$0.0",
                   ),
                 ),
+              )
+            ],
           );
         }
         return Container();

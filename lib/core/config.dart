@@ -7,7 +7,7 @@ const api_confirm         = "${api_uri}check-register-code";
 const api_logout          = "${api_uri}logout";
 const api_list_products   = "${api_uri}products/list";
 const api_products_detail = "${api_uri}products/item/";
-const api_search          = "${host}products/filter-search?textSearch=";
+const api_search          = "${api_uri}products/filter-search?textSearch=";
 const api_list_categories = "${api_uri}categories/list";
 const api_list_brand      = "${api_uri}brand/list";
 const api_list_banner     = "${api_uri}banner";

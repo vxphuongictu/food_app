@@ -6,6 +6,7 @@ import 'package:food_app_v2/screens/bestSelling/BestSelling.dart';
 import 'package:food_app_v2/screens/login/Login.dart';
 import 'package:food_app_v2/screens/HomeBase.dart';
 import 'package:food_app_v2/screens/exclusive/ExclusiveOffer.dart';
+import 'package:food_app_v2/screens/search/Search.dart';
 
 void main()
 {
@@ -57,7 +58,8 @@ class _myRoute extends State<myRoute>
         '/login': (context) => Login(),
         '/home': (context) => HomeBase(),
         '/exclusive': (context) => ExclusiveOffer(),
-        '/best-selling': (context) => BestSelling()
+        '/best-selling': (context) => BestSelling(),
+        '/search-result': (context) => SearchScreen()
       },
     );
   }

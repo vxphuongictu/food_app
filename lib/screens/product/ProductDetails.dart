@@ -15,7 +15,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:food_app_v2/controllers/detailProducts.dart';
 import 'package:food_app_v2/core/SharePreferences.dart';
 import 'package:food_app_v2/function/toColor.dart';
-import 'package:food_app_v2/models/MyCart.dart';
 import 'package:food_app_v2/models/ProductDetails.dart';
 import 'package:food_app_v2/widgets/MyButton.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
@@ -42,12 +41,14 @@ class _ProductDetail extends State<ProductDetail>
   late Future<dynamic> ? getQuantity;
   late TextEditingController inputQuantity;
   late Future<ProductDetails> details;
+  late Future<bool> isFavourite;
 
   @override
   void initState() {
     super.initState();
     this.details        = fetchDetails(product_id: this.widget.productID!);
     this.getQuantity    = SharedMyCart().get(productID: this.widget.productID!);
+    this.isFavourite    = SharedMyFavourite().isFavourite(this.widget.productID);
     this.getQuantity?.then((value) {
       setState(() {
         this.quantity     = value;
@@ -88,13 +89,8 @@ class _ProductDetail extends State<ProductDetail>
     );
   }
 
-  Future<bool> onLikeButtonTapped(bool isLiked) async{
-    /// send your request here
-    // final bool success= await sendRequest();
-
-    /// if failed, you can do nothing
-    // return success? !isLiked:isLiked;
-    print(isLiked.toString());
+  Future<bool> onLikeButtonTapped(bool isLiked) async {
+    SharedMyFavourite().add(productID: this.widget.productID);
     return !isLiked;
   }
 
@@ -168,6 +164,7 @@ class _ProductDetail extends State<ProductDetail>
                                   fontFamily: 'Gilroy-Bold',
                                 ),
                                 LikeButton(
+                                  // isLiked: true,
                                   onTap: onLikeButtonTapped,
                                 ),
                               ],
@@ -385,7 +382,6 @@ class _ProductDetail extends State<ProductDetail>
             ),
           );
         }
-
         return Container();
       },
     );

@@ -14,25 +14,27 @@ import 'package:food_app_v2/models/ProductSearch.dart';
 import 'package:food_app_v2/core/SharePreferences.dart';
 
 
-Future<ProductSearch> fetchDetails({required String str}) async
+Future<List<ProductSearch>> fetchDetails({required String str}) async
 {
-  final uri         = api_search + str;
-  final myUser      = SharedMyUser();
-  final accessToken = await myUser.getToken();
-  final response     = await http.get(
+  final uri           = api_search + str;
+  final myUser        = SharedMyUser();
+  final accessToken   = await myUser.getToken();
+  List<ProductSearch> productSearch = [];
+  final response      = await http.get(
       Uri.parse(uri),
       headers: {
         'Authorization' : 'Bearer ${accessToken}',
       }
   );
-  print(uri);
-  print(accessToken);
-  print(response.statusCode);
-  print(response.body);
+
   if (response.statusCode == 201) {
-    final json_decode   = jsonDecode(response.body);
-    return ProductSearch.formJson(json_decode);
+    List<dynamic> json_decode   = jsonDecode(response.body)['list_product']['data'];
+    for (var i = 0; i < json_decode.length; i ++) {
+      final data = ProductSearch.formJson(json_decode[i]);
+      productSearch.add(data);
+    }
   } else {
     throw Exception("Something went wrong");
   }
+  return productSearch;
 }

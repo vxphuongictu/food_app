@@ -187,3 +187,45 @@ class SharedMyCart
     return quantity;
   }
 }
+
+
+class SharedMyFavourite {
+  // Obtain shared preferences.
+  List<String> listFavourite = [];
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+
+  add({int ? productID}) async
+  {
+    final SharedPreferences prefs = await _prefs;
+    List<String> favouriteList = [];
+
+    if (favouriteList.contains(productID)){
+      favouriteList.remove(productID.toString());
+    } else {
+      favouriteList.add(productID.toString());
+    }
+
+    await prefs.setStringList('favourites', favouriteList.toList());
+  }
+
+  get() async {
+    final SharedPreferences prefs = await _prefs;
+    List<String>? allFavourite = await prefs.getStringList('favourites');
+    return allFavourite;
+  }
+
+  Future<bool> isFavourite(int ? productID) async {
+    final SharedPreferences prefs = await _prefs;
+    List<String>? allFavourite    = await prefs.getStringList('favourites');
+
+    if (productID != null) {
+      for (var prdID in allFavourite!) {
+        if (productID == prdID) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+}

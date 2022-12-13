@@ -29,8 +29,8 @@ class ProductSearch extends ProductList
     return ProductSearch(
         id          : json['id'],
         media_id    : json['media_id'],
-        title       : json['title'],
-        description : json['description'],
+        title       : json['name'],
+        description : json['title'],
         price       : json['price'],
         total_rate  : json['total_rate'],
         total_vote  : json['total_vote'],

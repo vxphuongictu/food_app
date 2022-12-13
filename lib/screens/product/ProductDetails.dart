@@ -90,21 +90,21 @@ class _ProductDetail extends State<ProductDetail>
   }
 
   Future<bool> onLikeButtonTapped(bool isLiked) async {
-    SharedMyFavourite().add(productID: this.widget.productID);
+    await SharedMyFavourite().add(productID: this.widget.productID);
     return !isLiked;
   }
 
   Widget detail() {
-    return FutureBuilder<ProductDetails>(
-      future: this.details,
+    return FutureBuilder<dynamic>(
+      future: Future.wait([this.details, this.isFavourite]),//this.details,
       builder: (context, snapshot) {
-
         if (snapshot.hasData) {
-          if (snapshot.data?.price != null) {
-            this.totalPrice =
-            (this.quantity! * snapshot.data!.price!.toDouble());
+          final dataProducts = snapshot.data[0];
+          final dataFavourite = snapshot.data[1];
+          if (dataProducts?.price != null) {
+            this.totalPrice = (this.quantity! * dataProducts!.price!.toDouble());
           } else {
-            this.totalPrice = snapshot.data?.price;
+            this.totalPrice = dataProducts?.price;
           }
 
           return SizedBox(
@@ -136,14 +136,14 @@ class _ProductDetail extends State<ProductDetail>
                           spaceBetween: 4.0,
                           widthAnimation: 20.0),
                       customizedBanners: [
-                        (snapshot.data?.media) != null ? Image.asset(
-                            '${host}${snapshot.data?.media}') : Image.asset(
+                        (dataProducts?.media) != null ? Image.asset(
+                            '${host}${dataProducts?.media}') : Image.asset(
                             'assets/images/product.png'),
-                        (snapshot.data?.media) != null ? Image.asset(
-                            '${host}${snapshot.data?.media}') : Image.asset(
+                        (dataProducts?.media) != null ? Image.asset(
+                            '${host}${dataProducts?.media}') : Image.asset(
                             'assets/images/product.png'),
-                        (snapshot.data?.media) != null ? Image.asset(
-                            '${host}${snapshot.data?.media}') : Image.asset(
+                        (dataProducts?.media) != null ? Image.asset(
+                            '${host}${dataProducts?.media}') : Image.asset(
                             'assets/images/product.png'),
                       ],
                     ),
@@ -158,13 +158,13 @@ class _ProductDetail extends State<ProductDetail>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 MyText(
-                                  text: "${snapshot.data?.title}",
+                                  text: "${dataProducts?.title}",
                                   color: '#181725',
                                   size: 24.0,
                                   fontFamily: 'Gilroy-Bold',
                                 ),
                                 LikeButton(
-                                  // isLiked: true,
+                                  isLiked: dataFavourite,
                                   onTap: onLikeButtonTapped,
                                 ),
                               ],
@@ -174,7 +174,7 @@ class _ProductDetail extends State<ProductDetail>
                             margin: const EdgeInsets.only(bottom: 30.0),
                             width: double.infinity,
                             child: MyText(
-                              text: "${snapshot.data?.description}",
+                              text: "${dataProducts?.description}",
                               color: '#7C7C7C'.toString(),
                             )
                         ),
@@ -272,7 +272,7 @@ class _ProductDetail extends State<ProductDetail>
                                 ],
                               ),
                               MyText(
-                                text: "${snapshot.data?.description}",
+                                text: "${dataProducts?.description}",
                                 fontFamily: 'Gilroy-Medium',
                                 size: 13.0,
                               ),

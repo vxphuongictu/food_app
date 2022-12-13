@@ -191,37 +191,44 @@ class SharedMyCart
 
 class SharedMyFavourite {
   // Obtain shared preferences.
-  List<String> listFavourite = [];
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
 
   add({int ? productID}) async
   {
-    final SharedPreferences prefs = await _prefs;
-    List<String> favouriteList = [];
 
-    if (favouriteList.contains(productID)){
-      favouriteList.remove(productID.toString());
-    } else {
-      favouriteList.add(productID.toString());
+    List<String> listFavourite  = [];
+    final SharedPreferences prefs = await _prefs;
+    List<String> allFavourite     = await get();
+    print(allFavourite);
+
+    for (var item in allFavourite) {
+      if (listFavourite.contains(item) == false) {
+        listFavourite.add(item);
+      }
     }
 
-    await prefs.setStringList('favourites', favouriteList.toList());
+    if (listFavourite.contains(productID.toString())){
+      listFavourite.remove(productID.toString());
+    } else {
+      listFavourite.add(productID.toString());
+    }
+
+    await prefs.setStringList('favourites', listFavourite.toList());
   }
 
   get() async {
     final SharedPreferences prefs = await _prefs;
-    List<String>? allFavourite = await prefs.getStringList('favourites');
+    List<String>? allFavourite    = await prefs.getStringList('favourites');
     return allFavourite;
   }
 
   Future<bool> isFavourite(int ? productID) async {
     final SharedPreferences prefs = await _prefs;
     List<String>? allFavourite    = await prefs.getStringList('favourites');
-
     if (productID != null) {
       for (var prdID in allFavourite!) {
-        if (productID == prdID) {
+        if (productID.toString() == prdID) {
           return true;
         }
       }

@@ -6,6 +6,7 @@ import 'package:food_app_v2/widgets/CartItem.dart';
 import 'package:food_app_v2/widgets/FavouriteItem.dart';
 import 'package:food_app_v2/widgets/MyButton.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
+import 'package:food_app_v2/core/SharePreferences.dart';
 
 
 class Favourite extends StatefulWidget
@@ -19,11 +20,13 @@ class Favourite extends StatefulWidget
 class _Favourite extends State<Favourite>
 {
 
-  late Future ? products;
+  late Future products;
+  late Future listFavourite;
 
   @override
   void initState() {
-    products  = fetchProducts();
+    products      = fetchProducts();
+    listFavourite = SharedMyFavourite().get();
   }
 
   @override
@@ -63,21 +66,33 @@ class _Favourite extends State<Favourite>
   }
   Widget myFavourite()
   {
-    return FutureBuilder(
-      future: products,
+    return FutureBuilder<dynamic>(
+      future: Future.wait([this.products, this.listFavourite]),
       builder: (context, snapshot) {
-        return ListView.builder(
-          itemCount: snapshot.data?.length,
-          itemBuilder: (context, index) => InkWell(
-            onTap: ()=> Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductDetail(productID: snapshot.data?[index].id),
-                )
-            ),
-            child: FavouriteItem(),
-          ),
-        );
+        if (snapshot.hasData) {
+          final dataProduct   = snapshot.data[0];
+          final dataFavourite = snapshot.data[1];
+          print(dataProduct[1].id.toString());
+          print(dataFavourite);
+          return ListView.builder(
+            itemCount: dataProduct.length,
+            itemBuilder: (context, index) =>
+            InkWell(
+                  onTap: () =>
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                            ProductDetail(productID: dataProduct?[index].id),
+                          )
+                      ),
+                  child:
+                  (dataFavourite.contains(dataProduct[index].id.toString())) ?
+                  FavouriteItem(thumbnails: dataProduct[index].media, productPrice: dataProduct[index].price, productName: dataProduct[index].title, productDescription: dataProduct[index].description,) : Container(),
+                ),
+          );
+        }
+        return Container();
       },
     );
   }

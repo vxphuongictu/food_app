@@ -24,7 +24,7 @@ Future<ListOrders> getListOrders() async
       'Authorization' : "Bearer ${accessToken}",
     }
   );
-  print(response.body);
+
   if (response.statusCode == 201) {
     final json_decode   = jsonDecode(response.body);
     return ListOrders.formJson(json_decode);

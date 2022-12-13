@@ -5,6 +5,14 @@ import 'package:food_app_v2/widgets/MyText.dart';
 
 class FavouriteItem extends StatefulWidget
 {
+
+  late String ? productName;
+  late String ? productDescription;
+  late double ? productPrice;
+  late String ? thumbnails;
+
+  FavouriteItem({this.productName, this.productDescription, this.productPrice, this.thumbnails});
+
   @override
   State<FavouriteItem> createState() {
     return _FavouriteItem();
@@ -35,7 +43,7 @@ class _FavouriteItem extends State<FavouriteItem>
           SizedBox(
             width: 70.0,
             height: 70.0,
-            child: Image.asset("assets/images/product.png"),
+            child: (this.widget.thumbnails == null || this.widget.thumbnails == "null") ? Image.asset("assets/images/product.png") : Image.network("${this.widget.thumbnails}"),
           ),
           Container(
             margin: EdgeInsets.only(left: 30.0),
@@ -46,17 +54,18 @@ class _FavouriteItem extends State<FavouriteItem>
                 Container(
                   margin: EdgeInsets.only(bottom: 5.0),
                   child: MyText(
-                    text: "Bell Pepper Red",
+                    text: "${this.widget.productName}",
                     size: 16.0,
                     fontFamily: "Gilroy-Bold",
                     fontWeight: FontWeight.w100,
                   ),
                 ),
                 MyText(
-                  text: "1kg, Price",
+                  text: "${this.widget.productDescription}",
                   fontFamily: "Gilroy-Medium",
                   size: 14.0,
                   color: '#7C7C7C',
+                  overflow: true,
                 ),
               ],
             ),
@@ -67,7 +76,7 @@ class _FavouriteItem extends State<FavouriteItem>
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   MyText(
-                    text: "\$1.50",
+                    text: "\$${this.widget.productPrice}",
                     size: 16.0,
                   ),
                   IconButton(

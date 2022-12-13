@@ -42,6 +42,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   like_button: ^2.0.5
   add_to_cart_animation: ^1.0.1
+  editable_image: ^1.1.0
 
 
 

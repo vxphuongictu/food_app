@@ -5,6 +5,7 @@ import 'package:food_app_v2/widgets/CartItem.dart';
 import 'package:food_app_v2/widgets/MyButton.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/controllers/listCart.dart';
+import 'package:food_app_v2/widgets/Checkout.dart';
 
 
 class Cart extends StatefulWidget
@@ -26,6 +27,12 @@ class _Cart extends State<Cart>
     this.listCart  = fetchCart();
   }
 
+  Future<void> _refresh() async {
+    setState(() {
+      this.listCart  = fetchCart();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,9 +45,12 @@ class _Cart extends State<Cart>
             fontFamily: "Gilroy-Bold",
           ),
         ),
-        body: SafeArea(
-          minimum: EdgeInsets.only(left: 20.0, right: 20.0),
-          child: myCart(),
+        body: RefreshIndicator(
+          onRefresh: _refresh,
+          child: SafeArea(
+            minimum: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: myCart(),
+          ),
         ),
     );
   }
@@ -85,9 +95,19 @@ class _Cart extends State<Cart>
               Container(
                 margin: EdgeInsets.only(bottom: 24.0),
                 child: TextButton(
-                  onPressed: () => {
-                    print('123123')
-                  },
+                  onPressed: () => setState(() {
+                    showModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      enableDrag: false,
+                      isDismissible: false,
+                      context: context,
+                      builder: (context){
+                        return StatefulBuilder(builder: (context, newState){
+                          return const ModalCheckOut();
+                        });
+                      },
+                    );
+                  }),
                   child: MyButton(
                     text: "Go to Checkout",
                     description: (this.totalPriceToCheckOut != null) ? "\$${(this.totalPriceToCheckOut).toStringAsFixed(3)}" : "\$0.0",

@@ -31,6 +31,11 @@ class _Explore extends State<Explore>
     listCats = fetchBrand();
   }
 
+  Future<void> _refresh() async {
+    setState(() {
+      listCats = fetchBrand();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +60,12 @@ class _Explore extends State<Explore>
           ],
         ),
       ),
-      body: SafeArea(
-        minimum: EdgeInsets.only(left: 25.0, right: 25.0),
-        child: listProduct(),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: SafeArea(
+          minimum: EdgeInsets.only(left: 25.0, right: 25.0),
+          child: listProduct(),
+        ),
       ),
     );
   }

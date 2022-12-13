@@ -34,7 +34,6 @@ class _ExclusiveOffer extends State<ExclusiveOffer>
         toolbarHeight: 120.0,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        centerTitle: true,
         title: Column(
           children: [
             Container(

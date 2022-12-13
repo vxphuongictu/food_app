@@ -128,17 +128,13 @@ class _Search extends State<Search>
   }
 
   searchMethod(TextEditingController query) {
+    print('hihi');
     searchResult = fetchDetails(str: query.text);
-    FutureBuilder<List<ProductSearch>>(
-        future: searchResult,
-        builder: (context, snapshot) {
-          print(snapshot.hasData);
-          if (snapshot.hasData) {
-            // Navigator.pushNamedAndRemoveUntil(context, '/search-result', (route) => false);
-            // print("object");
-          }
-          return Text("");
-        }
-    );
+    if(searchResult != null){
+      print('1');
+    }else{
+      print('object');
+    }
+    print('end');
   }
 }

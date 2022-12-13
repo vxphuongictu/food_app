@@ -31,6 +31,12 @@ class _HomeScreen extends State<HomeScreen>
     super.initState();
   }
 
+  Future<void> refresh() async {
+    setState(() {
+      listProducts  = fetchProducts();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,9 +53,12 @@ class _HomeScreen extends State<HomeScreen>
         elevation: 0.0,
         toolbarHeight: 80.0,
       ),
-      body: SafeArea(
-        minimum: EdgeInsets.only(left: 25.0, right: 25.0),
-        child: myHome(),
+      body: RefreshIndicator(
+        onRefresh: refresh,
+        child: SafeArea(
+          minimum: EdgeInsets.only(left: 25.0, right: 25.0),
+          child: myHome(),
+        ),
       ),
       // bottomNavigationBar: BottomNavigation(),
     );

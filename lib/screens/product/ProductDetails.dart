@@ -56,6 +56,14 @@ class _ProductDetail extends State<ProductDetail>
     });
   }
 
+  Future<void> _refresh() async {
+    setState(() {
+      this.details        = fetchDetails(product_id: this.widget.productID!);
+      this.getQuantity    = SharedMyCart().get(productID: this.widget.productID!);
+      this.isFavourite    = SharedMyFavourite().isFavourite(this.widget.productID);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     inputQuantity   = TextEditingController(text: "${this.quantity}");
@@ -82,9 +90,12 @@ class _ProductDetail extends State<ProductDetail>
           ),
         ),
       ),
-      body: SafeArea(
-        minimum: EdgeInsets.only(left: 5.0, right: 5.0),
-        child: detail(),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: SafeArea(
+          minimum: EdgeInsets.only(left: 5.0, right: 5.0),
+          child: detail(),
+        ),
       ),
     );
   }

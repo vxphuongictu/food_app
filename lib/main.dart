@@ -46,6 +46,7 @@ class _myRoute extends State<myRoute>
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.transparent),
         appBarTheme: const AppBarTheme(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
         )

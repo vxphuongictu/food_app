@@ -22,11 +22,20 @@ class _Favourite extends State<Favourite>
 
   late Future products;
   late Future listFavourite;
+  late dynamic dataProduct;
+  late dynamic dataFavourite;
 
   @override
   void initState() {
     products      = fetchProducts();
     listFavourite = SharedMyFavourite().get();
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      products      = fetchProducts();
+      listFavourite = SharedMyFavourite().get();
+    });
   }
 
   @override
@@ -41,9 +50,12 @@ class _Favourite extends State<Favourite>
           fontFamily: "Gilroy-Bold",
         ),
       ),
-      body: SafeArea(
-        minimum: EdgeInsets.only(left: 20.0, right: 20.0),
-        child: favouriteScreen(),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: SafeArea(
+          minimum: EdgeInsets.only(left: 20.0, right: 20.0),
+          child: favouriteScreen(),
+        ),
       ),
     );
   }
@@ -57,23 +69,26 @@ class _Favourite extends State<Favourite>
         ),
         Container(
           margin: EdgeInsets.only(bottom: 24.0),
-          child: MyButton(
-            text: "Add All To Cart",
+          child: InkWell(
+            onTap: () => addToCart(),
+            child: MyButton(
+              text: "Add All To Cart",
+            ),
           ),
         )
       ],
     );
   }
+
   Widget myFavourite()
   {
     return FutureBuilder<dynamic>(
       future: Future.wait([this.products, this.listFavourite]),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final dataProduct   = snapshot.data[0];
-          final dataFavourite = snapshot.data[1];
-          print(dataProduct[1].id.toString());
-          print(dataFavourite);
+          dataProduct   = snapshot.data[0];
+          dataFavourite = snapshot.data[1];
+
           return ListView.builder(
             itemCount: dataProduct.length,
             itemBuilder: (context, index) =>
@@ -97,4 +112,15 @@ class _Favourite extends State<Favourite>
     );
   }
 
+  void addToCart() async {
+    for (var prd in this.dataProduct) {
+      if (this.dataFavourite.contains(prd.id.toString())) {
+        await SharedMyCart().add(productID: prd.id, productName: prd.title, productPrice: prd.price, productDescription: prd.description, productThumbnails: prd.media);
+        await SharedMyFavourite().add(productID: prd.id);
+        setState(() {
+          this.listFavourite = SharedMyFavourite().get();
+        });
+      }
+    }
+  }
 }

@@ -16,7 +16,7 @@ class _SearchScreen extends State<SearchScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Search(),
+        // title: Search(),
       ),
       body: searchResult(),
     );

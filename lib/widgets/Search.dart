@@ -20,7 +20,8 @@ class Search extends StatefulWidget
   late FontWeight ? fontWeight;
   late String ? hintText;
   late String ? color;
-
+  late Function parent;
+  late String defaul;
   Search({
     this.width=double.infinity,
     this.height=50.0,
@@ -28,7 +29,9 @@ class Search extends StatefulWidget
     this.fontFamily="Gilroy",
     this.fontWeight=FontWeight.w600,
     this.hintText="Search Store",
-    this.color="#181B19"
+    this.color="#181B19",
+    required this.parent,
+    required this.defaul
   });
 
   @override
@@ -128,13 +131,6 @@ class _Search extends State<Search>
   }
 
   searchMethod(TextEditingController query) {
-    print('hihi');
-    searchResult = fetchDetails(str: query.text);
-    if(searchResult != null){
-      print('1');
-    }else{
-      print('object');
-    }
-    print('end');
+    this.widget.parent(query.text);
   }
 }

@@ -45,7 +45,7 @@ class _BestSelling extends State<BestSelling>
                 size: 20.0,
               ),
             ),
-            Search()
+            // Search()
           ],
         ),
       ),

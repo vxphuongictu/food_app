@@ -56,7 +56,7 @@ class _Explore extends State<Explore>
                 size: 20.0,
               ),
             ),
-            Search()
+            // Search()
           ],
         ),
       ),

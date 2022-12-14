@@ -5,6 +5,7 @@ import 'package:food_app_v2/function/toColor.dart';
 import 'package:food_app_v2/widgets/MyButton.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/controllers/logout.dart';
+import 'package:food_app_v2/widgets/UserAvatar.dart';
 
 
 class Account extends StatefulWidget
@@ -22,12 +23,6 @@ class _Account extends State<Account>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100.0,
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        title: AccountInfo(),
-      ),
       body: SafeArea(
         minimum: const EdgeInsets.only(
           left: 25.0,
@@ -41,48 +36,49 @@ class _Account extends State<Account>
 
   Widget myAccount()
   {
-    return Column(
+    return SingleChildScrollView(
+      child: Column(
         children: [
-          Expanded(child: listItem()),
+          AccountInfo(),
+          listItem(),
           Container(
             margin: EdgeInsets.only(bottom: 25.0),
             child: InkWell(
-                onTap: () async {
-                  EasyLoading.show(status: 'Logout...');
-                  this.logout  = await logOutController();
-                  if (this.logout == true) {
-                    setState(() {
-                      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-                    });
-                  } else {
-                    EasyLoading.showToast("Error...");
-                  }
-                },
-                child: MyButton(
-                  text: "Log Out",
-                  icon: FontAwesomeIcons.signOut,
-                ),
+              onTap: () async {
+                EasyLoading.show(status: 'Logout...');
+                this.logout  = await logOutController();
+                if (this.logout == true) {
+                  setState(() {
+                    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                  });
+                } else {
+                  EasyLoading.showToast("Error...");
+                }
+              },
+              child: MyButton(
+                text: "Log Out",
+                icon: FontAwesomeIcons.signOut,
+              ),
             ),
           ),
         ],
-      );
+      ),
+    );
   }
 
   Widget listItem()
   {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Item(Icon(FontAwesomeIcons.bagShopping),"Orders"),
-          Item(Icon(FontAwesomeIcons.idCard),"My Details"),
-          Item(Icon(FontAwesomeIcons.locationDot),"Delivery Address"),
-          Item(Icon(FontAwesomeIcons.creditCard),"Payment Methods"),
-          Item(Icon(FontAwesomeIcons.addressBook),"Promo Cord"),
-          Item(Icon(FontAwesomeIcons.bell),"Notifecations"),
-          Item(Icon(FontAwesomeIcons.question),"Help"),
-          Item(Icon(FontAwesomeIcons.info),"About"),
-        ],
-      ),
+    return Column(
+      children: [
+        Item(Icon(FontAwesomeIcons.bagShopping),"Orders"),
+        Item(Icon(FontAwesomeIcons.idCard),"My Details"),
+        Item(Icon(FontAwesomeIcons.locationDot),"Delivery Address"),
+        Item(Icon(FontAwesomeIcons.creditCard),"Payment Methods"),
+        Item(Icon(FontAwesomeIcons.addressBook),"Promo Cord"),
+        Item(Icon(FontAwesomeIcons.bell),"Notifecations"),
+        Item(Icon(FontAwesomeIcons.question),"Help"),
+        Item(Icon(FontAwesomeIcons.info),"About"),
+      ],
     );
   }
 
@@ -99,14 +95,7 @@ class _Account extends State<Account>
       ),
       child: Row(
         children: [
-          Container(
-            width: 70,
-            height: 70,
-            child: const CircleAvatar(
-              backgroundImage: NetworkImage(
-                  'https://i.pinimg.com/originals/f4/7b/9a/f47b9acecd520dd5a78d0218449a4985.jpg'),
-            ),
-          ), // Avatar
+          UserAvatar(),
           Container(
             margin: EdgeInsets.only(left: 20),
             child: Column(
@@ -201,6 +190,5 @@ class _Account extends State<Account>
         ],
       ),
     );
-
   }
 }

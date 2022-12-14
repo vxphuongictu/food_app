@@ -45,7 +45,7 @@ class _ExclusiveOffer extends State<ExclusiveOffer>
                 size: 20.0,
               ),
             ),
-            Search()
+            // Search()
           ],
         ),
       ),

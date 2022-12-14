@@ -22,6 +22,7 @@ class HomeScreen extends StatefulWidget
 class _HomeScreen extends State<HomeScreen>
 {
 
+  late String search = "";
   late Future<dynamic> listProducts;
 
   @override
@@ -36,7 +37,12 @@ class _HomeScreen extends State<HomeScreen>
       listProducts  = fetchProducts();
     });
   }
-
+  void children_chage(String chill){
+    print(chill);
+    setState(() {
+      search = chill;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +83,9 @@ class _HomeScreen extends State<HomeScreen>
               children: [
                 Search(
                     hintText: "Search Store",
-                    color: "#7C7C7C"
+                    color: "#7C7C7C",
+                  defaul: search,
+                  parent: children_chage,
                 ),
                 breakLine(),
                 const BannerImage(),

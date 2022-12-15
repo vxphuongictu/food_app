@@ -32,7 +32,7 @@ Future<bool> registerController({required String name, required String email, re
   if (response.statusCode == 201) {
     final userInfo      = jsonDecode(response.body);
     final storageData   = SharedMyUser();
-    storageData.set(userInfo['user']['id'], userInfo['user']['name'], userInfo['user']['email'], userInfo['token']);
+    storageData.set(id: userInfo['user']['id'], name: userInfo['user']['name'], email: userInfo['user']['email'], token: userInfo['token']);
     registerStatus      = true;
   } else if (response.statusCode == 401) {
     print('Username or password invalid!');

@@ -15,22 +15,24 @@ class SharedMyUser
   // Obtain shared preferences.
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  set(int ? id, String ? name, String ? email, String ? token) async
+  set({int ? id = null, String ? name = null, String ? email = null, String ? token = null, String ? avatar = null}) async
   {
     final SharedPreferences prefs = await _prefs;
     (id != null) ? await prefs.setInt('id', id) : '-1';
     (name != null) ? await prefs.setString('name', name) : '';
     (email != null) ? await prefs.setString('email', email) : '';
     (token != null) ? await prefs.setString('token', token) : '';
+    (avatar != null) ? await prefs.setString('avatar', avatar) : '';
   }
 
-  remove(int ? id, String ? name, String ? email, String ? token) async
+  remove({int ? id = null, String ? name = null, String ? email = null, String ? token = null, String ? avatar = null}) async
   {
     final SharedPreferences prefs = await _prefs;
     (id != null) ? await prefs.remove('id') : '-1';
     (name != null) ? await prefs.remove('name') : '';
     (email != null) ? await prefs.remove('email') : '';
     (token != null) ? await prefs.remove('token') : '';
+    (avatar != null) ? await prefs.remove('avatar') : '';
   }
 
   Future<int?> getID() async
@@ -59,6 +61,13 @@ class SharedMyUser
     final SharedPreferences prefs = await _prefs;
     final String ? token = prefs.getString('token');
     return token;
+  }
+
+  Future<String?> getAvatar() async
+  {
+    final SharedPreferences prefs = await _prefs;
+    final String ? avatar = prefs.getString('avatar');
+    return avatar;
   }
 
   Future<bool?> logOut() async

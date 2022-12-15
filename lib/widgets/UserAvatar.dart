@@ -7,6 +7,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:editable_image/editable_image.dart';
 import 'package:food_app_v2/controllers/userImage.dart';
+import 'package:food_app_v2/core/SharePreferences.dart';
+import 'package:food_app_v2/core/config.dart';
 
 class UserAvatar extends StatefulWidget
 {
@@ -21,6 +23,7 @@ class _UserAvatar extends State<UserAvatar>
 {
 
   File ? _profilePicFile;
+  late String avatar_uri = 'https://i.pinimg.com/originals/f4/7b/9a/f47b9acecd520dd5a78d0218449a4985.jpg';
 
   void _changeImage(File ? file) async {
     if (file == null) return;
@@ -28,6 +31,16 @@ class _UserAvatar extends State<UserAvatar>
       _profilePicFile = file;
     });
     updateImage(file);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    SharedMyUser().getAvatar().then((value){
+      setState(() {
+        if ((value != null && value != "")) this.avatar_uri = "${host}${value}";
+      });
+    });
   }
 
   @override
@@ -44,7 +57,7 @@ class _UserAvatar extends State<UserAvatar>
       // Define the source of the image.
       image: _profilePicFile != null
           ? Image.file(_profilePicFile!, fit: BoxFit.cover)
-          : Image.network('https://i.pinimg.com/originals/f4/7b/9a/f47b9acecd520dd5a78d0218449a4985.jpg', fit: BoxFit.cover,),
+          : Image.network(this.avatar_uri.toString(), fit: BoxFit.cover,),
 
       // Define the size of EditableImage.
       size: 80.0,

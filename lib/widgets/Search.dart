@@ -22,6 +22,7 @@ class Search extends StatefulWidget
   late String ? color;
   late Function parent;
   late String defaul;
+
   Search({
     this.width=double.infinity,
     this.height=50.0,

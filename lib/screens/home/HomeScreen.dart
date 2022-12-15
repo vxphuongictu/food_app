@@ -84,8 +84,8 @@ class _HomeScreen extends State<HomeScreen>
                 Search(
                     hintText: "Search Store",
                     color: "#7C7C7C",
-                  defaul: search,
-                  parent: children_chage,
+                    defaul: search,
+                    parent: children_chage,
                 ),
                 breakLine(),
                 const BannerImage(),

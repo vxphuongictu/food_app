@@ -9,6 +9,8 @@ class MyText extends StatelessWidget
   late FontWeight fontWeight;
   late String ? color;
   late bool ? overflow;
+  int ? maxLines;
+  bool ? centerText;
 
   MyText({
     this.text="Simple Text",
@@ -16,7 +18,9 @@ class MyText extends StatelessWidget
     this.fontFamily="Gilroy",
     this.fontWeight=FontWeight.w600,
     this.color="#181725",
-    this.overflow=false
+    this.overflow=false,
+    this.maxLines=1,
+    this.centerText=false
   });
 
   @override
@@ -24,6 +28,8 @@ class MyText extends StatelessWidget
     return Container(
       child: Text(
         this.text.toString(),
+        textAlign: (this.centerText == true) ? TextAlign.center : TextAlign.left,
+        maxLines: this.maxLines,
         overflow: (this.overflow != false) ? TextOverflow.ellipsis : null,
         style: TextStyle(
           fontWeight: this.fontWeight,

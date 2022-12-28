@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:food_app_v2/core/SharePreferences.dart';
+import 'package:food_app_v2/database/DatabaseManager.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/widgets/MyButton.dart';
 import 'package:food_app_v2/function/toColor.dart';
@@ -57,7 +58,7 @@ class _ItemBox extends State<ItemBox>
           children: [
             Container(
               margin: EdgeInsets.only(top: 25.0, bottom: 25.0),
-              child: (this.widget.thumbnails != "" && this.widget.thumbnails != null) ? Image.network(
+              child: (this.widget.thumbnails != "null" && this.widget.thumbnails != null ) ? Image.network(
                 "${host}${this.widget.thumbnails}",
                 width: 100.0,
                 height: 80.0,
@@ -98,13 +99,17 @@ class _ItemBox extends State<ItemBox>
                           if (this.widget.price != "") MyText(text: "\$${this.widget.price}", fontFamily: 'Gilroy', size: 18.0, color: '#181725'),
                           InkWell(
                             onTap: () {
-                              SharedMyCart().add(
+                              DatabaseManager().insertCart(
                                 productID: this.widget.productID,
                                 productName: this.widget.title,
                                 productDescription: this.widget.shortDescription,
                                 productPrice: this.widget.price,
-                                productThumbnails: this.widget.thumbnails
+                                productThumbnails: this.widget.thumbnails,
+                                productQuantity: 1,
+                                productTotalPrice: this.widget.price
                               );
+
+                              Navigator.pushNamed(context, '/my-cart');
                             },
                             child: MyButton(width: 45.67, height: 45.67, borderRadius: 18.0, icon: Icons.add),
                           )

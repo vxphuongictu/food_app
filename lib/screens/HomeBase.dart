@@ -1,17 +1,21 @@
-import 'package:awesome_bottom_navigation/awesome_bottom_navigation.dart';
+/*
+ * Dependencies
+ * salomon_bottom_bar: ^3.3.1
+ */
+
 import 'package:flutter/material.dart';
 import 'package:food_app_v2/function/toColor.dart';
-import 'package:food_app_v2/screens/account/Account.dart';
 import 'package:food_app_v2/screens/cart/Cart.dart';
-import 'package:food_app_v2/screens/explore/Explore.dart';
-import 'package:food_app_v2/screens/favourite/Favourite.dart';
+import 'package:food_app_v2/core/SharePreferences.dart';
 import 'package:food_app_v2/screens/home/HomeScreen.dart';
+import 'package:food_app_v2/screens/account/Account.dart';
+import 'package:food_app_v2/screens/explore/Explore.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:food_app_v2/screens/favourite/Favourite.dart';
 
 
 class HomeBase extends StatefulWidget
 {
-
-  int ? tabIndex = 0;
 
   @override
   State<HomeBase> createState() {
@@ -22,6 +26,22 @@ class HomeBase extends StatefulWidget
 class _HomeBase extends State<HomeBase>
 {
 
+  int tabIndex = 0;
+
+  Future<void> fetchData() async {
+    await SharedNavMenuOptions().get().then((value){
+      this.tabIndex = value!;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.fetchData().then((value) {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +51,44 @@ class _HomeBase extends State<HomeBase>
 
   Widget Home()
   {
-    List<dynamic> screens = [
+    List<SalomonBottomBarItem> listButton = [
+      /// Home
+      SalomonBottomBarItem(
+        icon: Icon(Icons.home),
+        title: Text("Home"),
+        selectedColor: Colors.teal,
+      ),
+
+      /// Exploder
+      SalomonBottomBarItem(
+        icon: Icon(Icons.manage_search),
+        title: Text("Explore"),
+        selectedColor: Colors.blueGrey,
+      ),
+
+      /// Cart
+      SalomonBottomBarItem(
+        icon: Icon(Icons.shopping_cart_outlined),
+        title: Text("Cart"),
+        selectedColor: Colors.purpleAccent,
+      ),
+
+      /// Favourite
+      SalomonBottomBarItem(
+        icon: Icon(Icons.favorite_border),
+        title: Text("Favourite"),
+        selectedColor: Colors.teal,
+      ),
+
+      /// Accounts
+      SalomonBottomBarItem(
+        icon: Icon(Icons.person_outline),
+        title: Text("Accounts"),
+        selectedColor: Colors.indigo,
+      ),
+    ];
+
+    final List<dynamic> listScreen = [
       HomeScreen(),
       Explore(),
       Cart(),
@@ -40,34 +97,26 @@ class _HomeBase extends State<HomeBase>
     ];
 
     return Scaffold(
-      body: screens[this.widget.tabIndex!],
-      bottomNavigationBar: AwesomeBottomNav(
-        icons: const [
-          Icons.house_outlined,
-          Icons.manage_search,
-          Icons.shopping_cart_outlined,
-          Icons.favorite_border,
-          Icons.person_outline
-        ],
-        highlightedIcons: const [
-          Icons.house_outlined,
-          Icons.manage_search,
-          Icons.shopping_cart_outlined,
-          Icons.favorite_border,
-          Icons.person_outline,
-        ],
-        onTapped: (int value) {
-          setState(() {
-            if (screens.length > value) {
-              this.widget.tabIndex = value;
-            }
-          });
-        },
-        bodyBgColor: Colors.transparent,
-        highlightColor: '#53B175'.toColor(),
-        navFgColor: Colors.grey.withOpacity(1),
-        navBgColor: Colors.white,
-      ),
+      body: listScreen[this.tabIndex],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          border: Border.all(
+            color: '#e1e8e1'.toColor(),
+            width: 1,
+          )
+        ),
+        child: SalomonBottomBar(
+          currentIndex: this.tabIndex,
+          onTap: (i) {
+            setState(() {
+              this.tabIndex = i;
+              SharedNavMenuOptions().set(option: i);
+            });
+          },
+          items: listButton,
+        ),
+      )
     );
   }
 }

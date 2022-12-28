@@ -14,23 +14,29 @@ import 'package:food_app_v2/core/SharePreferences.dart';
 import 'package:food_app_v2/models/UpdateUser.dart';
 
 
-Future<UpdateUser> updateUser({String ? name, bool ? gender, String ? address, String ? birthday}) async
+Future<UpdateUser> updateUser({String ? name, int ? gender, String ? address, String ? birthday}) async
 {
 
   final myUser      = SharedMyUser();
   final userID      = await myUser.getID();
+  final accessToken = await myUser.getToken();
 
+  final headers     = {
+    'Authorization' : 'Bearer $accessToken',
+  };
+
+  final body        = {
+    'user_id'       : userID.toString(),
+    'name'          : name.toString(),
+    'gender'        : gender.toString(),
+    'address'       : address.toString(),
+    'birthday'      : birthday.toString(),
+  };
 
   final response    = await http.post(
     Uri.parse(api_update_user),
-    headers: {},
-    body: {
-      'id'      : userID,
-      'name'    : name,
-      'gender'  : gender,
-      'address' : address,
-      'birthday': birthday,
-    }
+    headers: headers,
+    body: body,
   );
 
   if (response.statusCode == 201) {

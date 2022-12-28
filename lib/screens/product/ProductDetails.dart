@@ -10,16 +10,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:banner_carousel/banner_carousel.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:food_app_v2/controllers/detailProducts.dart';
 import 'package:food_app_v2/core/SharePreferences.dart';
+import 'package:food_app_v2/database/DatabaseManager.dart';
 import 'package:food_app_v2/function/toColor.dart';
-import 'package:food_app_v2/models/ProductDetails.dart';
+import 'package:food_app_v2/models/ProductList.dart';
 import 'package:food_app_v2/widgets/MyButton.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/core/config.dart';
 import 'package:like_button/like_button.dart';
+import 'package:food_app_v2/widgets/DropDownItemGorups.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 class ProductDetail extends StatefulWidget {
@@ -37,30 +38,42 @@ class _ProductDetail extends State<ProductDetail>
 {
 
   late dynamic totalPrice;
-  int ? quantity = 0;
+  int quantity = 0;
+  bool showDetails = false;
+  bool showNutritions = false;
+  bool showReview = false;
   late Future<dynamic> ? getQuantity;
   late TextEditingController inputQuantity;
-  late Future<ProductDetails> details;
-  late Future<bool> isFavourite;
+  late Future<ProductList> details;
+  bool isFavourite = false;
 
-  @override
-  void initState() {
-    super.initState();
-    this.details        = fetchDetails(product_id: this.widget.productID!);
-    this.getQuantity    = SharedMyCart().get(productID: this.widget.productID!);
-    this.isFavourite    = SharedMyFavourite().isFavourite(this.widget.productID);
-    this.getQuantity?.then((value) {
-      setState(() {
-        this.quantity     = value;
-      });
-    });
+  Future<bool> onLikeButtonTapped(bool isLiked) async {
+    await SharedMyFavourite().add(productID: this.widget.productID);
+    return !isLiked;
   }
 
   Future<void> _refresh() async {
     setState(() {
       this.details        = fetchDetails(product_id: this.widget.productID!);
-      this.getQuantity    = SharedMyCart().get(productID: this.widget.productID!);
-      this.isFavourite    = SharedMyFavourite().isFavourite(this.widget.productID);
+      this.getQuantity    = DatabaseManager().fetchDetailProductInCart(this.widget.productID);
+      SharedMyFavourite().isFavourite(this.widget.productID).then((value) {
+        if (value != null) this.isFavourite    = value;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.details        = fetchDetails(product_id: this.widget.productID!);
+    this.getQuantity    = DatabaseManager().fetchDetailProductInCart(this.widget.productID);
+    SharedMyFavourite().isFavourite(this.widget.productID).then((value) {
+      if (value != null) this.isFavourite    = value;
+    });
+    this.getQuantity?.then((value) {
+      setState(() {
+        this.quantity     = value[0]['productQuantity'];
+      });
     });
   }
 
@@ -72,48 +85,42 @@ class _ProductDetail extends State<ProductDetail>
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         actions: [
-          IconButton(
+          Padding(padding: EdgeInsets.only(right: default_margin), child: IconButton(
             onPressed: ()=> {},
             icon: Icon(
               Icons.share,
               color: '#181725'.toColor(),
             ),
-          )
+          )),
         ],
-        leading: IconButton(
+        leading: Padding(padding: EdgeInsets.only(left: default_margin), child: IconButton(
           onPressed: () => Navigator.pop(
-            context
+              context
           ),
           icon: Icon(
             Icons.arrow_back_ios,
             color: '#181725'.toColor(),
           ),
-        ),
+        )),
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: SafeArea(
-          minimum: EdgeInsets.only(left: 5.0, right: 5.0),
+          minimum: EdgeInsets.only(left: default_margin, right: default_margin),
           child: detail(),
         ),
       ),
     );
   }
 
-  Future<bool> onLikeButtonTapped(bool isLiked) async {
-    await SharedMyFavourite().add(productID: this.widget.productID);
-    return !isLiked;
-  }
-
   Widget detail() {
     return FutureBuilder<dynamic>(
-      future: Future.wait([this.details, this.isFavourite]),//this.details,
+      future: this.details,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final dataProducts = snapshot.data[0];
-          final dataFavourite = snapshot.data[1];
+          final dataProducts = snapshot.data;
           if (dataProducts?.price != null) {
-            this.totalPrice = (this.quantity! * dataProducts!.price!.toDouble());
+            this.totalPrice = (this.quantity * dataProducts!.price!.toDouble());
           } else {
             this.totalPrice = dataProducts?.price;
           }
@@ -147,20 +154,20 @@ class _ProductDetail extends State<ProductDetail>
                           spaceBetween: 4.0,
                           widthAnimation: 20.0),
                       customizedBanners: [
-                        (dataProducts?.media) != null ? Image.asset(
+                        (dataProducts?.media) != null ? Image.network(
                             '${host}${dataProducts?.media}') : Image.asset(
                             'assets/images/product.png'),
-                        (dataProducts?.media) != null ? Image.asset(
+                        (dataProducts?.media) != null ? Image.network(
                             '${host}${dataProducts?.media}') : Image.asset(
                             'assets/images/product.png'),
-                        (dataProducts?.media) != null ? Image.asset(
+                        (dataProducts?.media) != null ? Image.network(
                             '${host}${dataProducts?.media}') : Image.asset(
                             'assets/images/product.png'),
                       ],
                     ),
                   ), // Banner, Back button, share button,
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.only(top: 30.0),
                     child: Column(
                       children: [
                         SizedBox(
@@ -175,7 +182,7 @@ class _ProductDetail extends State<ProductDetail>
                                   fontFamily: 'Gilroy-Bold',
                                 ),
                                 LikeButton(
-                                  isLiked: dataFavourite,
+                                  isLiked: this.isFavourite,
                                   onTap: onLikeButtonTapped,
                                 ),
                               ],
@@ -191,17 +198,20 @@ class _ProductDetail extends State<ProductDetail>
                         ),
                         Container(
                             padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
-                            decoration: BoxDecoration(
-                              // border: '#F2F3F2'.toColor()
+                            decoration: const BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Color.fromRGBO(226, 226, 226, 0.7)
+                                    )
+                                )
                             ),
                             child: Row(
                               children: [
                                 IconButton(
                                   onPressed: () =>
                                       setState(() {
-                                        this.quantity =
-                                        (this.quantity! < 1) ? 0 : (this
-                                            .quantity! - 1);
+                                        this.quantity = (this.quantity < 1) ? 0 : (this.quantity - 1);
+                                        DatabaseManager().updateCart(productID: this.widget.productID, productQuantity: this.quantity, productTotalPrice: this.totalPrice);
                                       }),
                                   icon: const FaIcon(
                                     FontAwesomeIcons.minus,
@@ -233,7 +243,8 @@ class _ProductDetail extends State<ProductDetail>
                                 IconButton(
                                   onPressed: () =>
                                       setState(() {
-                                        this.quantity = (this.quantity! + 1);
+                                        this.quantity = (this.quantity + 1);
+                                        DatabaseManager().updateCart(productID: this.widget.productID, productQuantity: this.quantity, productTotalPrice: this.totalPrice);
                                       }),
                                   icon: const FaIcon(
                                     FontAwesomeIcons.plus,
@@ -255,145 +266,28 @@ class _ProductDetail extends State<ProductDetail>
                               ],
                             )
                         ),
-                        Container(
-                          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                          decoration: BoxDecoration(
-                            // border: '#F2F3F2'.toColor()
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  MyText(
-                                    text: "Product Detail",
-                                    size: 16.0,
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                        alignment: Alignment.bottomRight,
-                                        child: IconButton(
-                                          onPressed: () => {},
-                                          icon: const FaIcon(
-                                            FontAwesomeIcons.angleDown,
-                                            size: 20,
-                                          ),
-                                        )
-                                    ),
-                                  )
-                                ],
-                              ),
-                              MyText(
-                                text: "${dataProducts?.description}",
-                                fontFamily: 'Gilroy-Medium',
-                                size: 13.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                          decoration: BoxDecoration(
-                            // border: '#F2F3F2'.toColor()
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: MyText(
-                                  text: "Nutritions",
-                                  size: 16.0,
-                                ),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                height: 18.0,
-                                width: 33.0,
-                                decoration: const BoxDecoration(
-                                  color: Color.fromRGBO(235, 235, 235, 1),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(5.0),
-                                  ),
-                                ),
-                                child: MyText(
-                                  text: "100gr",
-                                  size: 9.0,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () => {},
-                                icon: const FaIcon(
-                                  FontAwesomeIcons.angleRight,
-                                  color: Color.fromRGBO(24, 23, 37, 1),
-                                  size: 20.0,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: MyText(
-                                  text: "Review",
-                                  size: 16.0,
-                                  color: '#181725',
-                                ),
-                              ),
-                              Container(
-                                child: RatingBar.builder(
-                                  initialRating: 5,
-                                  minRating: 1,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: true,
-                                  itemCount: 5,
-                                  onRatingUpdate: (rating) {
-                                    print(rating);
-                                  },
-                                  itemBuilder: (context, _) =>
-                                  const Icon(
-                                    Icons.star,
-                                    color: Color.fromRGBO(243, 96, 63, 1),
-                                  ),
-                                  itemSize: 20.0,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () => {},
-                                icon: const FaIcon(
-                                  FontAwesomeIcons.angleRight,
-                                  color: Color.fromRGBO(24, 23, 37, 1),
-                                  size: 20.0,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () => setState(() {
-                            SharedMyCart().add(
-                              productID: this.widget.productID,
-                              productDescription: "${snapshot.data?.description}",
-                              productPrice: (snapshot.data?.price)?.toDouble(),
-                              productThumbnails: "${snapshot.data?.media}",
-                              productName: "${snapshot.data?.title}",
-                              productQuantity: this.quantity
-                            );
-                          }),
-                          child: MyButton(
-                            text: "Add To Basket",
-                            textSize: 18.0,
-                          ),
-                        ),
+                        DropDownItemGroups(title: "Product Detail", descriptions: "${dataProducts?.description}"),
+                        DropDownItemGroups(title: "Nutritions", subTitle: "100gr"),
+                        DropDownItemGroups(title: "Review", voteRate: 5.0),
                       ],
                     ),
                   ),
+                  Padding(padding: EdgeInsets.only(bottom: bottom_button, top: bottom_button), child: GestureDetector(
+                    onTap: () {
+                      DatabaseManager().insertCart(productID: this.widget.productID, productName: snapshot.data?.title, productDescription: snapshot.data?.description, productQuantity: this.quantity, productPrice: (snapshot.data?.price)?.toDouble(), productThumbnails: snapshot.data?.media, productTotalPrice: (snapshot.data?.price)?.toDouble());
+                      Navigator.pushNamed(context, '/my-cart');
+                    },
+                    child: MyButton(
+                      text: "Add To Basket",
+                      textSize: 18.0,
+                    ),
+                  ))
                 ],
               ),
             ),
           );
         }
-        return Container();
+        return SizedBox();
       },
     );
   }

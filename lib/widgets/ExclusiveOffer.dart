@@ -3,6 +3,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:food_app_v2/core/config.dart';
 import 'package:food_app_v2/widgets/ItemBox.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/screens/product/ProductDetails.dart';
@@ -50,7 +51,7 @@ class _ExclusiveOffer extends State<ExclusiveOffer>
         ),
         TextButton(
           onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(context, '/exclusive', (route) => false);
+            Navigator.pushNamed(context, '/exclusive');
           },
           child: MyText(
             text: "See all",
@@ -63,20 +64,15 @@ class _ExclusiveOffer extends State<ExclusiveOffer>
   }
 
   Widget productListView() {
-    return SizedBox(
+    return Container(
         height: 300.0,
+        padding: EdgeInsets.only(right: 0, left: default_margin),
         child: ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemCount: this.widget.data?.length,
           itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProductDetail(productID: this.widget.data?[index].id),
-                  )
-              ),
+            return GestureDetector(
               child: ItemBox(
                 productID: this.widget.data?[index].id,
                 title: this.widget.data?[index].title,
@@ -84,6 +80,12 @@ class _ExclusiveOffer extends State<ExclusiveOffer>
                 shortDescription: this.widget.data?[index].description,
                 thumbnails: this.widget.data?[index].media,
                 onpress: () => ProductDetail(productID: this.widget.data?[index].id),
+              ),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetail(productID: this.widget.data?[index].id),
+                )
               ),
             );
           },

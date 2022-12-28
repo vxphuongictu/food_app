@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_app_v2/function/toColor.dart';
+import 'package:food_app_v2/core/config.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/controllers/listProducts.dart';
 import 'package:food_app_v2/screens/product/ProductDetails.dart';
@@ -31,26 +31,29 @@ class _ExclusiveOffer extends State<ExclusiveOffer>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 120.0,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
+        leading: IconButton(
+          padding: EdgeInsets.only(left: default_margin),
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+        ),
         title: Column(
           children: [
-            Container(
-              margin: EdgeInsets.only(bottom: 30.0),
-              child: MyText(
-                text: "Exclusive Offer",
-                fontFamily: "Gilroy-Bold",
-                fontWeight: FontWeight.w100,
-                size: 20.0,
-              ),
+            MyText(
+              text: "Exclusive Offer",
+              fontFamily: "Gilroy-Bold",
+              fontWeight: FontWeight.w100,
+              size: 20.0,
             ),
-            // Search()
           ],
         ),
       ),
       body: SafeArea(
-        minimum: EdgeInsets.only(left: 25.0, right: 10.0),
+        minimum: EdgeInsets.only(left: default_margin, right: 0),
         child: listProduct(),
       ),
     );

@@ -30,4 +30,28 @@ class MyCart
       productTotalPrice   : json['productTotalPrice']
     );
   }
+
+  MyCart.fromMap(Map<String, dynamic> map){
+    productID = map['productID'];
+    productName = map['productName'];
+    productDescription = map['productDescription'];
+    productQuantity = map['productQuantity'];
+    productThumbnails = map['productThumbnails'];
+    productPrice = map['productPrice'];
+    productTotalPrice = map['productTotalPrice'];
+  }
+
+  Map<String, dynamic> toMap()
+  {
+    var map = <String, dynamic> {
+      'productID': this.productID,
+      'productName': this.productName,
+      'productDescription': this.productDescription,
+      'productQuantity': this.productQuantity,
+      'productThumbnails': this.productThumbnails,
+      'productTotalPrice': this.productTotalPrice
+    };
+
+    return map;
+  }
 }

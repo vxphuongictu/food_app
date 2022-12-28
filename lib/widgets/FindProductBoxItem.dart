@@ -35,15 +35,18 @@ class FindProductBoxItem extends StatelessWidget
         child: Column(
           children: [
             Container(
+              height: 80.0,
               margin: EdgeInsets.only(top: 28.0, bottom: 28.0),
-              child: (this.thumbnails) != null ? Image.network('${this.thumbnails}') : Image.asset('assets/images/product.png'),
+              child: (this.thumbnails) != null ? Image.network('${host}${this.thumbnails}') : Image.asset('assets/images/product.png'),
             ),
             MyText(
               text: (this.productName) != null ? this.productName : '',
+              maxLines: 2,
               size: 16.0,
               fontFamily: 'Gilroy-Bold',
               fontWeight: FontWeight.w100,
               overflow: true,
+              centerText: true,
             )
           ],
         ),

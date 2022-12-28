@@ -6,6 +6,8 @@ import 'package:food_app_v2/widgets/MyButton.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/controllers/logout.dart';
 import 'package:food_app_v2/widgets/UserAvatar.dart';
+import 'package:food_app_v2/core/SharePreferences.dart';
+
 
 
 class Account extends StatefulWidget
@@ -19,6 +21,24 @@ class _Account extends State<Account>
 {
 
   bool ? logout;
+  String ? email;
+  String ? name;
+
+  @override
+  void initState() {
+    super.initState();
+    this.getInfo().then((value) {
+      setState(() {
+
+      });
+    });
+  }
+
+  Future<void> getInfo() async {
+    final dataUser  = SharedMyUser();
+    this.email      = await dataUser.getEmail();
+    this.name       = await dataUser.getName();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,18 +51,18 @@ class _Account extends State<Account>
         child: myAccount(),
       ),
     );
-    throw UnimplementedError();
   }
 
   Widget myAccount()
   {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          AccountInfo(),
-          listItem(),
-          Container(
-            margin: EdgeInsets.only(bottom: 25.0),
+      child: Container(
+        child: Column(
+          children: [
+            AccountInfo(),
+            listItem(),
+            Container(
+            margin: const EdgeInsets.only(bottom: 25.0, top: 45.0),
             child: InkWell(
               onTap: () async {
                 EasyLoading.show(status: 'Logout...');
@@ -61,7 +81,8 @@ class _Account extends State<Account>
               ),
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -85,7 +106,7 @@ class _Account extends State<Account>
   /* Avatar & Email */
   Widget AccountInfo() {
     return Container(
-      padding: EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.only(bottom: 40),
       decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -104,31 +125,27 @@ class _Account extends State<Account>
                 Row(
                   children: [
                     MyText(
-                      text: "Afsar Hossen",
+                      text: (this.name != null) ? this.name : "Afsar Hossen",
                       fontFamily: "Gilroy-Bold",
                       size: 20.0,
                       fontWeight: FontWeight.w100,
                     ), // Name
                     Container(
-                      child: Container(
-                        margin: const EdgeInsets.only(left: 6),
-                        child: IconButton(
-                          onPressed: ()=>{},
-                          icon: const Icon(FontAwesomeIcons.pencil, size: 13, color: Colors.green),
-                        ),
-                      )
+                      margin: const EdgeInsets.only(left: 6),
+                      child: IconButton(
+                        onPressed: (){
+                          Navigator.pushNamed(context, '/edit-user');
+                        },
+                        icon: const Icon(FontAwesomeIcons.pencil, size: 13, color: Colors.green),
+                      ),
                     ),
                   ],
                 ), // Name & Edit button
-                Container(
-                  child: const Text(
-                    "Imshuvo97@gmail.com",
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 13
-                    ),
-                  ),
-                ), // Email
+                MyText(
+                  text: (this.email != null) ? this.email : "Vxphuongictu998@gmail.com",
+                  size: 13.0,
+                  color: "#7c7c7c",
+                )
               ],
             ),
           ), // Name & Email
@@ -163,7 +180,7 @@ class _Account extends State<Account>
               ),
               Flexible(
                 flex: 3,
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
                   child: Text(
                     title,

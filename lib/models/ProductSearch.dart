@@ -35,7 +35,7 @@ class ProductSearch extends ProductList
         total_rate  : json['total_rate'],
         total_vote  : json['total_vote'],
         status      : json['status'],
-        media       : json['media'],
+        media       : (json['media'] != null) ? json['media']['url'] : null,
         isFavourite : json['isFavourite']
     );
   }

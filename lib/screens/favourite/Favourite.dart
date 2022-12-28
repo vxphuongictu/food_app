@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app_v2/controllers/listProducts.dart';
+import 'package:food_app_v2/database/DatabaseManager.dart';
 import 'package:food_app_v2/models/ProductList.dart';
 import 'package:food_app_v2/screens/product/ProductDetails.dart';
 import 'package:food_app_v2/widgets/CartItem.dart';
@@ -87,8 +88,12 @@ class _Favourite extends State<Favourite>
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           dataProduct   = snapshot.data[0];
-          dataFavourite = snapshot.data[1];
-
+          try {
+            snapshot.data[1].length;
+            dataFavourite = snapshot.data[1];
+          } catch (e){
+            dataFavourite = [];
+          }
           return ListView.builder(
             itemCount: dataProduct.length,
             itemBuilder: (context, index) =>
@@ -101,9 +106,7 @@ class _Favourite extends State<Favourite>
                             ProductDetail(productID: dataProduct?[index].id),
                           )
                       ),
-                  child:
-                  (dataFavourite.contains(dataProduct[index].id.toString())) ?
-                  FavouriteItem(thumbnails: dataProduct[index].media, productPrice: dataProduct[index].price, productName: dataProduct[index].title, productDescription: dataProduct[index].description,) : Container(),
+                  child: (dataFavourite.contains(dataProduct[index].id.toString())) ? FavouriteItem(thumbnails: dataProduct[index].media, productPrice: dataProduct[index].price, productName: dataProduct[index].title, productDescription: dataProduct[index].description,) : Container(),
                 ),
           );
         }
@@ -115,7 +118,7 @@ class _Favourite extends State<Favourite>
   void addToCart() async {
     for (var prd in this.dataProduct) {
       if (this.dataFavourite.contains(prd.id.toString())) {
-        await SharedMyCart().add(productID: prd.id, productName: prd.title, productPrice: prd.price, productDescription: prd.description, productThumbnails: prd.media);
+        await DatabaseManager().insertCart(productID: prd.id, productName: prd.id, productDescription: prd.description, productQuantity: 1, productPrice: prd.price, productThumbnails: prd.media, productTotalPrice: prd.price);
         await SharedMyFavourite().add(productID: prd.id);
         setState(() {
           this.listFavourite = SharedMyFavourite().get();

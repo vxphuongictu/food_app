@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:food_app_v2/controllers/listProducts.dart';
+import 'package:food_app_v2/core/config.dart';
 import 'package:food_app_v2/models/ProductList.dart';
 import 'package:food_app_v2/widgets/Logo.dart';
 import 'package:food_app_v2/widgets/Search.dart';
 import 'package:food_app_v2/widgets/BannerImage.dart';
-import 'package:food_app_v2/widgets/ExclusiveOffer.dart';
 import 'package:food_app_v2/widgets/BestSelling.dart';
+import 'package:food_app_v2/widgets/ExclusiveOffer.dart';
+import 'package:food_app_v2/screens/search/Search.dart';
+import 'package:food_app_v2/controllers/listProducts.dart';
 
 class HomeScreen extends StatefulWidget
 {
 
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() {
@@ -21,34 +22,38 @@ class HomeScreen extends StatefulWidget
 
 class _HomeScreen extends State<HomeScreen>
 {
-
-  late String search = "";
-  late Future<dynamic> listProducts;
+  Future<List<ProductList>> ? listProducts;
 
   @override
   void initState() {
-    EasyLoading.show(status: "Loading ...");
-    listProducts  = fetchProducts();
+    this.listProducts = fetchProducts();
     super.initState();
   }
 
   Future<void> refresh() async {
     setState(() {
-      listProducts  = fetchProducts();
+      this.listProducts = fetchProducts();
     });
   }
-  void children_chage(String chill){
-    print(chill);
-    setState(() {
-      search = chill;
-    });
+
+  Future<dynamic> searchCallBack({String ? searchKey, dynamic searchResult}) async {
+    searchResult.then((value) {
+        if (value.length > 0) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (BuildContext context) => SearchScreen(keySearch: searchKey ,searchResult: searchResult)),
+            ModalRoute.withName('/search-result')
+          );
+        }
+      });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Container(
-          margin: EdgeInsets.only(bottom: 10.0),
+          margin: const EdgeInsets.only(bottom: 10.0),
           child: Logo(
               image: Image.asset('assets/images/logo-home.png'),
               icon: Icons.location_on,
@@ -62,40 +67,39 @@ class _HomeScreen extends State<HomeScreen>
       body: RefreshIndicator(
         onRefresh: refresh,
         child: SafeArea(
-          minimum: EdgeInsets.only(left: 25.0, right: 25.0),
+          minimum: const EdgeInsets.only(left: default_margin, right: default_margin),
           child: myHome(),
         ),
       ),
-      // bottomNavigationBar: BottomNavigation(),
     );
   }
 
   Widget myHome()
   {
-    return FutureBuilder<dynamic>(
-        future: listProducts,
+    return FutureBuilder<List<ProductList>>(
+        future: this.listProducts,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            EasyLoading.dismiss();
-          }
-          return  SingleChildScrollView(
-            child: Column(
-              children: [
-                Search(
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Search(
                     hintText: "Search Store",
                     color: "#7C7C7C",
-                    defaul: search,
-                    parent: children_chage,
-                ),
-                breakLine(),
-                const BannerImage(),
-                breakLine(),
-                ExclusiveOffer(data: snapshot.data),
-                breakLine(),
-                BestSelling(data: snapshot.data)
-              ],
-            ),
-          );
+                    callback: searchCallBack,
+                  ),
+                  breakLine(),
+                  const BannerImage(),
+                  breakLine(),
+                  ExclusiveOffer(data: snapshot.data),
+                  breakLine(),
+                  BestSelling(data: snapshot.data)
+                ],
+              ),
+            );
+          } else {
+            return SizedBox();
+          }
         }
     );
   }
@@ -104,4 +108,5 @@ class _HomeScreen extends State<HomeScreen>
   {
     return const SizedBox(height: 20.0);
   }
+
 }

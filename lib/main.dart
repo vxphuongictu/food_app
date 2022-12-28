@@ -1,17 +1,30 @@
+/*
+ * Dependencies
+ * sqflite: ^2.2.2
+ */
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:food_app_v2/core/SharePreferences.dart';
 import 'package:food_app_v2/screens/bestSelling/BestSelling.dart';
+import 'package:food_app_v2/screens/cart/Cart.dart';
 import 'package:food_app_v2/screens/login/Login.dart';
 import 'package:food_app_v2/screens/HomeBase.dart';
 import 'package:food_app_v2/screens/exclusive/ExclusiveOffer.dart';
+import 'package:food_app_v2/screens/payment/Failed.dart';
+import 'package:food_app_v2/screens/payment/Success.dart';
 import 'package:food_app_v2/screens/search/Search.dart';
+import 'package:food_app_v2/screens/account/EditUser.dart';
+import 'package:food_app_v2/screens/account/Delivery.dart';
+import 'package:food_app_v2/screens/account/AddNewLocation.dart';
+import 'package:food_app_v2/database/DatabaseManager.dart';
 
 void main()
 {
   runApp(myRoute());
 }
+
 
 class myRoute extends StatefulWidget
 {
@@ -60,7 +73,13 @@ class _myRoute extends State<myRoute>
         '/home': (context) => HomeBase(),
         '/exclusive': (context) => ExclusiveOffer(),
         '/best-selling': (context) => BestSelling(),
-        '/search-result': (context) => SearchScreen()
+        '/search-result': (context) => SearchScreen(),
+        '/my-cart': (context) => Cart(),
+        '/edit-user': (context) => EditUser(),
+        '/delivery': (context) => Delivery(),
+        '/new-location': (context) => AddNewLocation(),
+        '/order-success': (context) => Success(),
+        '/order-failed': (context) => Failed(),
       },
     );
   }

@@ -13,6 +13,10 @@ import 'package:food_app_v2/core/config.dart';
 class UserAvatar extends StatefulWidget
 {
 
+  late double ? size;
+
+  UserAvatar({super.key, this.size});
+
   @override
   State<UserAvatar> createState() {
     return _UserAvatar();
@@ -60,7 +64,7 @@ class _UserAvatar extends State<UserAvatar>
           : Image.network(this.avatar_uri.toString(), fit: BoxFit.cover,),
 
       // Define the size of EditableImage.
-      size: 80.0,
+      size: (this.widget.size != null) ? this.widget.size : 80.0,
 
       // Define the Theme of image picker.
       imagePickerTheme: ThemeData(

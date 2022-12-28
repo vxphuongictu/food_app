@@ -5,17 +5,20 @@
  * This file will storage all session of the app
  */
 
-import 'package:flutter/foundation.dart';
-import 'package:food_app_v2/models/MyCart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'dart:math';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:food_app_v2/models/MyCart.dart';
+import 'package:food_app_v2/models/MyDelivery.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedMyUser
 {
   // Obtain shared preferences.
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  set({int ? id = null, String ? name = null, String ? email = null, String ? token = null, String ? avatar = null}) async
+  set({int ? id = null, String ? name = null, String ? email = null, String ? token = null, String ? avatar = null, int ? gender = null, String ? address = null, String ? birthday = null}) async
   {
     final SharedPreferences prefs = await _prefs;
     (id != null) ? await prefs.setInt('id', id) : '-1';
@@ -23,9 +26,12 @@ class SharedMyUser
     (email != null) ? await prefs.setString('email', email) : '';
     (token != null) ? await prefs.setString('token', token) : '';
     (avatar != null) ? await prefs.setString('avatar', avatar) : '';
+    (gender != null) ? await prefs.setInt('gender', gender) : '';
+    (address != null) ? await prefs.setString('address', address) : '';
+    (birthday != null) ? await prefs.setString('birthday', birthday) : '';
   }
 
-  remove({int ? id = null, String ? name = null, String ? email = null, String ? token = null, String ? avatar = null}) async
+  remove({int ? id = null, String ? name = null, String ? email = null, String ? token = null, String ? avatar = null, int ? gender = null, String ? address = null, String ? birthday = null}) async
   {
     final SharedPreferences prefs = await _prefs;
     (id != null) ? await prefs.remove('id') : '-1';
@@ -33,6 +39,16 @@ class SharedMyUser
     (email != null) ? await prefs.remove('email') : '';
     (token != null) ? await prefs.remove('token') : '';
     (avatar != null) ? await prefs.remove('avatar') : '';
+    (gender != null) ? await prefs.remove('gender') : '';
+    (address != null) ? await prefs.remove('address') : '';
+    (birthday != null) ? await prefs.remove('birthday') : '';
+  }
+
+  Future<String?> getBirthday() async
+  {
+    final SharedPreferences prefs = await _prefs;
+    final String ? birthday = prefs.getString('birthday');
+    return birthday;
   }
 
   Future<int?> getID() async
@@ -70,6 +86,18 @@ class SharedMyUser
     return avatar;
   }
 
+  Future<int?> getGender() async {
+    final SharedPreferences prefs = await _prefs;
+    final int ? gender = prefs.getInt('gender');
+    return gender;
+  }
+
+  Future<String?> getAddress() async {
+    final SharedPreferences prefs = await _prefs;
+    final String ? address = prefs.getString('address');
+    return address;
+  }
+
   Future<bool?> logOut() async
   {
     SharedPreferences preferences = await _prefs;
@@ -79,126 +107,9 @@ class SharedMyUser
 }
 
 
-class SharedMyCart
+
+class SharedMyFavourite
 {
-  // Obtain shared preferences.
-  List<String> listCart = [];
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
-
-  add({int ? productID, String ? productName, String ? productDescription, int ? productQuantity, String ? productThumbnails, double ? productPrice}) async
-  {
-    bool ? isAvailable            = false; // check product is available in cart
-    final SharedPreferences prefs = await _prefs;
-    final cart                    = await getAll();
-    final data = {
-      'productID': productID,
-      'productName': productName,
-      'productDescription': productDescription,
-      'productQuantity': (productQuantity) != null ? productQuantity : 1,
-      'productThumbnails': productThumbnails,
-      'productPrice': productPrice,
-      'productTotalPrice': productPrice
-    };
-    
-    try {
-      if (cart.length > 0) {
-        cart.forEach((element) {
-          this.listCart.add(element);
-        });
-      }
-    } catch(e) {
-      //
-    }
-
-    if (this.listCart.length > 0) {
-      for (var i = 0; i < this.listCart.length; i++) {
-        final item = json.decode(this.listCart[i]);
-        if (item['productID'] == data['productID']) {
-          item['productQuantity'] = item['productQuantity'] + 1;
-          try {
-            item['productTotalPrice'] = item['productQuantity'] * item['productPrice'];
-          } catch(e) {
-            item['productTotalPrice'] = double.parse(item['productPrice']);
-          }
-          this.listCart[i] = json.encode(item);
-          isAvailable = true;
-        }
-      }
-    }
-    if (isAvailable == false) this.listCart.add(json.encode(data));
-    if (productID != null) await prefs.setStringList('listCart', this.listCart.toList());
-  }
-
-  getAll() async
-  {
-    final SharedPreferences prefs = await _prefs;
-    final List<String>? items = prefs.getStringList('listCart');
-    return items;
-  }
-
-  clearALl() async
-  {
-    final SharedPreferences prefs = await _prefs;
-    await prefs.remove('listCart');
-  }
-
-  clearItem(int ? productID) async
-  {
-    try {
-      final SharedPreferences prefs = await _prefs;
-      final List<String>? listCart = await prefs.getStringList('listCart');
-      for (var item in listCart!) {
-        final json = jsonDecode(item);
-        if (json['productID'] == productID) {
-          listCart.remove(item);
-          await prefs.setStringList('listCart', listCart.toList());
-        }
-      }
-    } catch (e) {
-      //
-    }
-  }
-
-  update({int ? productID, int ? quantity}) async
-  {
-    try {
-      final SharedPreferences prefs = await _prefs;
-      final List<String>? listCart = await prefs.getStringList('listCart');
-      for (var i = 0; i <= listCart!.length; i ++) {
-        final json = jsonDecode(listCart[i]);
-        if (json['productID'] == productID) {
-          json['productQuantity'] = quantity;
-          json['productTotalPrice'] = json['productPrice'] * json['productQuantity'];
-          listCart[i] = jsonEncode(json);
-          await prefs.setStringList('listCart', listCart.toList());
-        }
-      }
-    } catch (e) {
-      //
-    }
-  }
-
-  get({int ? productID}) async
-  {
-    int ? quantity      = 1;
-    List<String> myCart  = await getAll();
-    try {
-      for (var i = 0; i < myCart.length; i ++) {
-        final item = jsonDecode(myCart[i]);
-        if (item['productID'] == productID) {
-          quantity = item['productQuantity'];
-        }
-      }
-    } catch (e) {
-      //
-    }
-    return quantity;
-  }
-}
-
-
-class SharedMyFavourite {
   // Obtain shared preferences.
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
@@ -209,11 +120,12 @@ class SharedMyFavourite {
     List<String> listFavourite  = [];
     final SharedPreferences prefs = await _prefs;
     List<String> allFavourite     = await get();
-    print(allFavourite);
 
-    for (var item in allFavourite) {
-      if (listFavourite.contains(item) == false) {
-        listFavourite.add(item);
+    if (allFavourite != null) {
+      for (var item in allFavourite) {
+        if (listFavourite.contains(item) == false) {
+          listFavourite.add(item);
+        }
       }
     }
 
@@ -232,16 +144,172 @@ class SharedMyFavourite {
     return allFavourite;
   }
 
-  Future<bool> isFavourite(int ? productID) async {
+  isFavourite(int ? productID) async {
     final SharedPreferences prefs = await _prefs;
     List<String>? allFavourite    = await prefs.getStringList('favourites');
-    if (productID != null) {
-      for (var prdID in allFavourite!) {
+    if (productID != null && allFavourite != null) {
+      for (var prdID in allFavourite) {
         if (productID.toString() == prdID) {
           return true;
         }
       }
     }
     return false;
+  }
+}
+
+class SharedNavMenuOptions
+{
+  // Obtain shared preferences.
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  set({int ? option = null}) async {
+    final SharedPreferences prefs = await _prefs;
+    if (option != null) await prefs.setInt('option', option);
+  }
+
+  Future<int?> get() async {
+    final SharedPreferences prefs = await _prefs;
+    return await prefs.getInt('option');
+  }
+
+  destroy() async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.remove('option');
+  }
+}
+
+class SharedMyDelivery
+{
+  // Obtain shared preferences.
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  List<String> listLocation = [];
+
+  add({int ? locatedID = null, required String fullname, required String phoneNumber, required String country, String ? street = null, int ? locationType = 0, bool ? isDefault = false, bool ? isPickup = false, bool ? isShipping = false}) async
+  {
+    final SharedPreferences prefs     = await _prefs;
+    final List<String> ? listDelivery = await prefs.getStringList('delivery');
+    var countID                       = Random().nextInt(9999);
+
+    try {
+      if (listDelivery!.isNotEmpty) {
+        for (var i = 0; i < listDelivery.length; i ++) {
+          final data                  = MyDelivery.formJson(json.decode(listDelivery[i]));
+          if (isDefault == true) data.isDefault = false;
+          if (locatedID != data.locatedID) {
+            final enCode = jsonEncode(<String, dynamic>{
+              'locatedID': data.locatedID,
+              'fullname': data.fullname,
+              'phoneNumber': data.phoneNumber,
+              'country': data.country,
+              'street': data.street,
+              'type': data.type,
+              'isDefault': data.isDefault,
+              'isPickup': data.isPickup,
+              'isShipping': data.isShipping,
+              'isSelected': data.isSelected
+            });
+            this.listLocation.add(enCode);
+          }
+        }
+      }
+    } catch (e) {
+      //
+    }
+
+    final data                    = jsonEncode(<String, dynamic>{
+      'locatedID'                 : countID,
+      'fullname'                  : fullname,
+      'phoneNumber'               : phoneNumber,
+      'country'                   : country,
+      'street'                    : street,
+      'type'                      : locationType,
+      'isDefault'                 : isDefault,
+      'isPickup'                  : isPickup,
+      'isShipping'                : isShipping,
+    });
+    this.listLocation.add(data);
+
+    await this.selected(locationID: countID);
+    if (this.listLocation != null) await prefs.setStringList('delivery', this.listLocation.toList());
+  }
+
+  Future<List> getAll() async {
+    final List<dynamic> listDelivery  = [];
+    final SharedPreferences prefs     = await _prefs;
+    final List<String> ? data         = await prefs.getStringList('delivery');
+    try {
+      for (var item in data!) {
+        final data = MyDelivery.formJson(jsonDecode(item));
+        if (data.isDefault == true) {
+          listDelivery.insert(0, data);
+        } else {
+          listDelivery.add(data);
+        }
+      }
+    } catch (e) {
+      //
+    }
+    return listDelivery;
+  }
+
+  Future<dynamic> get({required int locationID}) async {
+    final SharedPreferences prefs     = await _prefs;
+    final List<String> ? data         = await prefs.getStringList('delivery');
+    for (var item in data!) {
+      final data = MyDelivery.formJson(jsonDecode(item));
+      if (data.locatedID == locationID) {
+        return data;
+      }
+    }
+  }
+
+  removeAll() async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.remove('delivery');
+  }
+
+  Future<dynamic> remove({required int locationID}) async {
+    final List<String> listDelivery  = [];
+    final SharedPreferences prefs     = await _prefs;
+    final List<String> ? data         = await prefs.getStringList('delivery');
+    for (var item in data!) {
+      final data = MyDelivery.formJson(jsonDecode(item));
+      if (data.locatedID != locationID) {
+        listDelivery.add(item);
+      }
+    }
+    if (listDelivery != null) await prefs.setStringList('delivery', listDelivery.toList());
+  }
+
+  selected({required int locationID}) async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.setInt('currentDelivery', locationID);
+  }
+
+  currentLocation() async {
+    final SharedPreferences prefs = await _prefs;
+    return prefs.getInt('currentDelivery');
+  }
+}
+
+class SharedMyCard {
+  // Obtain shared preferences.
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  set({required CardFieldInputDetails ? card}) async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setString('card', card.toString());
+  }
+
+  get() async {
+    final SharedPreferences prefs = await _prefs;
+    final data = await prefs.getString('card');
+    return data;
+  }
+
+  destroy() async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.remove('option');
   }
 }

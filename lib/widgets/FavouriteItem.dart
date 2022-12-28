@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_app_v2/core/config.dart';
 import 'package:food_app_v2/function/toColor.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 
@@ -43,7 +44,7 @@ class _FavouriteItem extends State<FavouriteItem>
           SizedBox(
             width: 70.0,
             height: 70.0,
-            child: (this.widget.thumbnails == null || this.widget.thumbnails == "null") ? Image.asset("assets/images/product.png") : Image.network("${this.widget.thumbnails}"),
+            child: (this.widget.thumbnails == null && this.widget.thumbnails == "null") ? Image.asset("assets/images/product.png") : Image.network("${host}${this.widget.thumbnails}"),
           ),
           Container(
             margin: EdgeInsets.only(left: 30.0),

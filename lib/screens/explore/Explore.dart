@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_app_v2/core/config.dart';
 import 'package:food_app_v2/function/toColor.dart';
-import 'package:food_app_v2/models/Brands.dart';
+import 'package:food_app_v2/models/Categories.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/widgets/Search.dart';
 import 'package:food_app_v2/widgets/FindProductBoxItem.dart';
@@ -23,17 +23,17 @@ class _Explore extends State<Explore>
   List<dynamic> productArr   = [];
 
 
-  late Future<List<Brands>> listCats;
+  late Future<List<Categories>> listCats;
 
   @override
   void initState() {
     super.initState();
-    listCats = fetchBrand();
+    listCats = fetchCats();
   }
 
   Future<void> _refresh() async {
     setState(() {
-      listCats = fetchBrand();
+      listCats = fetchCats();
     });
   }
 
@@ -56,14 +56,14 @@ class _Explore extends State<Explore>
                 size: 20.0,
               ),
             ),
-            // Search()
+            Search()
           ],
         ),
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
         child: SafeArea(
-          minimum: EdgeInsets.only(left: 25.0, right: 25.0),
+          minimum: EdgeInsets.only(left: default_margin, right: default_margin),
           child: listProduct(),
         ),
       ),
@@ -80,7 +80,7 @@ class _Explore extends State<Explore>
           for (var i = 0; i < length!; i ++) {
             this.productArr.add(
                 FindProductBoxItem(
-                    productName: snapshot.data?[i].title,
+                    productName: snapshot.data?[i].name,
                     borderColor: "${snapshot.data?[i].border_color}".toColor(),
                     bgColor: "${snapshot.data?[i].background}".toColor(),
                     thumbnails: "${snapshot.data?[i].media}",

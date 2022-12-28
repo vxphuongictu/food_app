@@ -48,4 +48,35 @@ class ProductList
       isFavourite : json['isFavourite']
     );
   }
+
+  Map<String, dynamic> toMap()
+  {
+    var map = <String, dynamic> {
+      'id'          : this.id,
+      'media_id'    : this.media_id,
+      'title'       : this.title,
+      'description' : this.description,
+      'price'       : this.price,
+      'total_rate'  : this.total_rate,
+      'total_vote'  : this.total_vote,
+      'status'      : this.status,
+      'media'       : null, // don't sync media image because image save on server
+      'isFavourite' : this.isFavourite
+    };
+
+    return map;
+  }
+
+  ProductList.fromMap(Map<String, dynamic> map){
+    id          = map['id'];
+    media_id    = map['media_id'];
+    title       = map['title'];
+    description = map['description'];
+    price       = map['price'];
+    total_rate  = map['total_rate'];
+    total_vote  = map['total_rate'];
+    status      = map['status'];
+    media       = map['media'];
+    isFavourite = map['isFavourite'];
+  }
 }

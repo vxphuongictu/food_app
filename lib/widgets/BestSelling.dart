@@ -47,7 +47,7 @@ class _BestSelling extends State<BestSelling>
           size: 24.0,
         ),
         TextButton(
-          onPressed: ()=> Navigator.pushNamedAndRemoveUntil(context, '/best-selling', (route) => false),
+          onPressed: ()=> Navigator.pushNamed(context, '/best-selling'),
           child: MyText(
             text: "See all",
             color: "#53B175",
@@ -59,7 +59,7 @@ class _BestSelling extends State<BestSelling>
   }
 
   Widget productListView() {
-    return Container(
+    return SizedBox(
       height: 300.0,
       child: ListView.builder(
         shrinkWrap: true,

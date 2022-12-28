@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_app_v2/core/config.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 import 'package:food_app_v2/controllers/listProducts.dart';
 import 'package:food_app_v2/screens/product/ProductDetails.dart';
@@ -30,20 +31,24 @@ class _BestSelling extends State<BestSelling>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 120.0,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         centerTitle: true,
+        leading: IconButton(
+          padding: EdgeInsets.only(left: default_margin),
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+        ),
         title: Column(
           children: [
-            Container(
-              margin: EdgeInsets.only(bottom: 30.0),
-              child: MyText(
-                text: "Best Selling",
-                fontFamily: "Gilroy-Bold",
-                fontWeight: FontWeight.w100,
-                size: 20.0,
-              ),
+            MyText(
+              text: "Best Selling",
+              fontFamily: "Gilroy-Bold",
+              fontWeight: FontWeight.w100,
+              size: 20.0,
             ),
             // Search()
           ],

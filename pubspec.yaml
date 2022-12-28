@@ -43,12 +43,17 @@ dependencies:
   like_button: ^2.0.5
   add_to_cart_animation: ^1.0.1
   editable_image: ^1.1.0
-
+  date_time_picker: ^2.1.0
+  salomon_bottom_bar: ^3.3.1
+  flutter_switch: ^0.3.2
+  flutter_slidable: ^2.0.0
+  sqflite: ^2.2.2
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  flutter_stripe: ^7.0.0
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +84,9 @@ flutter:
     - assets/images/logo.png
     - assets/images/logo-home.png
     - assets/images/product.png
+    - assets/images/bg-success.png
+    - assets/images/icon-success.png
+    - assets/images/order-failed.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

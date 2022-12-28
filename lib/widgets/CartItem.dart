@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:food_app_v2/core/SharePreferences.dart';
 import 'package:food_app_v2/core/config.dart';
+import 'package:food_app_v2/database/DatabaseManager.dart';
 import 'package:food_app_v2/function/toColor.dart';
 import 'package:food_app_v2/widgets/MyText.dart';
 
@@ -82,7 +82,7 @@ class _CartItem extends State<CartItem>
                         ),
                         IconButton(
                           onPressed: () async {
-                            await SharedMyCart().clearItem(this.widget.productID);
+                            await DatabaseManager().removeItemInCart(this.widget.productID);
                             setState(() {
                               this.itemIsCart = false;
                             });
@@ -121,7 +121,7 @@ class _CartItem extends State<CartItem>
                         child: IconButton(
                           onPressed: ()=> setState(() {
                             this.widget.productQuantity = (this.widget.productQuantity! < 1) ? 0 : (this.widget.productQuantity! - 1);
-                            SharedMyCart().update(productID: this.widget.productID, quantity: this.widget.productQuantity);
+                            DatabaseManager().updateCart(productID: this.widget.productID, productQuantity: this.widget.productQuantity, productTotalPrice: this.totalPrice);
                           }),
                           icon: const FaIcon(
                             FontAwesomeIcons.minus,
@@ -157,7 +157,7 @@ class _CartItem extends State<CartItem>
                         child: IconButton(
                           onPressed: ()=> setState(() {
                             this.widget.productQuantity = this.widget.productQuantity! + 1;
-                            SharedMyCart().update(productID: this.widget.productID, quantity: this.widget.productQuantity);
+                            DatabaseManager().updateCart(productID: this.widget.productID, productQuantity: this.widget.productQuantity, productTotalPrice: this.totalPrice);
                           }),
                           icon: const FaIcon(
                             FontAwesomeIcons.plus,

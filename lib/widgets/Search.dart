@@ -10,6 +10,7 @@ import 'package:food_app_v2/controllers/productSearch.dart';
 import 'package:food_app_v2/models/ProductSearch.dart';
 import 'package:food_app_v2/widgets/Filter.dart';
 
+
 class Search extends StatefulWidget
 {
 
@@ -20,8 +21,9 @@ class Search extends StatefulWidget
   late FontWeight ? fontWeight;
   late String ? hintText;
   late String ? color;
-  late Function parent;
-  late String defaul;
+  late Function ? callback;
+  late bool ? showFilter;
+  late String ? keySearch;
 
   Search({
     this.width=double.infinity,
@@ -31,8 +33,9 @@ class Search extends StatefulWidget
     this.fontWeight=FontWeight.w600,
     this.hintText="Search Store",
     this.color="#181B19",
-    required this.parent,
-    required this.defaul
+    this.callback,
+    this.showFilter=false,
+    this.keySearch=''
   });
 
   @override
@@ -44,21 +47,19 @@ class Search extends StatefulWidget
 class _Search extends State<Search>
 {
 
-
-  bool showFilter = false;
-  late TextEditingController searchKey = TextEditingController();
+  late TextEditingController searchKey = TextEditingController(text: (this.widget.keySearch != '') ? this.widget.keySearch : '');
   late Future<List<ProductSearch>> searchResult;
 
-  changeStyle()
+  void changeStyle()
   {
     setState(() {
-      this.showFilter = (this.showFilter) ? false : true;
+      this.widget.showFilter = (this.widget.showFilter!) ? false : true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: (this.widget.height) != null ? this.widget.height : 50.0,
       child: Row(
@@ -103,7 +104,7 @@ class _Search extends State<Search>
               ),
             ),
           )),
-          (this.showFilter) ? IconButton(
+          (this.widget.showFilter!) ? IconButton(
             onPressed: ()=> setState(() {
               showModalBottomSheet(
                   elevation: 0,
@@ -132,6 +133,7 @@ class _Search extends State<Search>
   }
 
   searchMethod(TextEditingController query) {
-    this.widget.parent(query.text);
+    this.searchResult   = fetchDetails(str: query.text);
+    this.widget.callback!(searchKey: query.text, searchResult: this.searchResult);
   }
 }

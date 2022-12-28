@@ -14,8 +14,8 @@ class UpdateUser
   late String ? name;
   late String ? email;
   late String ? phone;
-  late bool ? gender;
-  late bool ? status;
+  late int ? gender;
+  late int ? status;
 
   UpdateUser({
     required this.id,
